@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Logístico Perú | MetPerú</title>
+
+  <!-- ── CDN: Tailwind CSS ──────────────────────────────────────────────── -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ── CDN: Leaflet.js ───────────────────────────────────────────────── -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- ── CDN: Font Awesome (iconos) ────────────────────────────────────── -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 900:'#1e3a8a' },
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── Base ───────────────────────────────────────────────────────────── */
+    html, body { height: 100%; margin: 0; font-family: 'Inter', system-ui, sans-serif; }
+    body { background: #f1f5f9; }
+
+    /* ── Scrollbar personalizada ─────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+
+    /* ── Mapa ────────────────────────────────────────────────────────────── */
+    #mapa { height: 100%; width: 100%; border-radius: 12px; z-index: 1; }
+    #contenedor-mapa { height: calc(100vh - 80px); min-height: 500px; position: relative; }
+
+    /* ── Panel derecho scroll ────────────────────────────────────────────── */
+    #panel-derecho { height: calc(100vh - 80px); overflow-y: auto; }
+
+    /* ── Animaciones ─────────────────────────────────────────────────────── */
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
+    .pulse { animation: pulse-dot 1.4s ease-in-out infinite; }
+
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .fade-in { animation: fadeIn .35s ease forwards; }
+
+    /* ── Marcador personalizado Leaflet ─────────────────────────────────── */
+    .marcador-dest {
+      width: 36px; height: 36px;
+      background: #2563eb;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(37,99,235,.45);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 10px; font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s;
+    }
+    .marcador-dest:hover { transform: scale(1.15); }
+    .marcador-dest.activo { background: #dc2626; border-color: #fca5a5; box-shadow: 0 0 0 4px rgba(220,38,38,.25); }
+    .marcador-lima {
+      width: 18px; height: 18px;
+      background: #16a34a;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(22,163,74,.5);
+    }
+    .marcador-parada {
+      width: 14px; height: 14px;
+      background: #f59e0b;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,.3);
+    }
+
+    /* ── KPI card hover ─────────────────────────────────────────────────── */
+    .kpi-card { transition: box-shadow .2s, transform .2s; }
+    .kpi-card:hover { box-shadow: 0 4px 16px rgba(37,99,235,.15); transform: translateY(-2px); }
+
+    /* ── Select estilo ──────────────────────────────────────────────────── */
+    .sel {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 32px !important;
+    }
+
+    /* ── Tabla simulador ────────────────────────────────────────────────── */
+    .tabla-sim tr:last-child td { border-bottom: none; }
+
+    /* ── Badge tipo viaje ───────────────────────────────────────────────── */
+    .badge-directo { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
+    .badge-paradas { background:#fef3c7; color:#b45309; border:1px solid #fcd34d; }
+
+    /* ── Leaflet popup override ─────────────────────────────────────────── */
+    .leaflet-popup-content-wrapper { border-radius: 10px !important; box-shadow: 0 4px 20px rgba(0,0,0,.15) !important; }
+    .leaflet-popup-content { margin: 10px 14px !important; }
+  </style>
+</head>
+
+<body class="bg-slate-100">
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       HEADER
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <header class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 text-white px-5 py-3 flex items-center justify-between shadow-lg" style="height:60px">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 bg-white/20 rounded-lg flex items-center justify-center">
+        <i class="fa-solid fa-truck-fast text-white text-lg"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-base leading-tight tracking-wide">Dashboard Logístico Perú</h1>
+        <p class="text-blue-200 text-xs">Análisis de Flete Por Provincia · MetPerú · Ene–May 2026</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4 text-sm">
+      <!-- Indicador de estado -->
+      <div id="estado-osrm" class="hidden flex items-center gap-1.5 text-blue-200 text-xs">
+        <span class="pulse w-2 h-2 bg-green-400 rounded-full inline-block"></span>
+        <span>OSRM conectado</span>
+      </div>
+      <div class="text-blue-200 text-xs hidden md:block">
+        <i class="fa-solid fa-circle-info mr-1"></i>
+        Haga clic en un marcador o seleccione un destino
+      </div>
+      <div id="badge-periodo" class="bg-white/15 border border-white/25 text-white text-xs px-3 py-1 rounded-full font-medium">
+        <i class="fa-solid fa-calendar-days mr-1"></i>Ene–May 2026
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       LAYOUT PRINCIPAL (dos columnas)
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <main class="flex gap-3 p-3" style="height:calc(100vh - 60px)">
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         COLUMNA IZQUIERDA: MAPA (60%)
+    ────────────────────────────────────────────────────────────────────── -->
+    <section class="flex-none" style="width:60%">
+      <div id="contenedor-mapa" class="relative bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
+
+        <!-- Mapa Leaflet -->
+        <div id="mapa"></div>
+
+        <!-- Overlay de carga OSRM -->
+        <div id="mapa-cargando" class="hidden absolute inset-0 bg-white/70 flex flex-col items-center justify-center z-50 rounded-xl">
+          <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+          <p class="text-blue-700 text-sm font-medium">Trazando ruta real (OSRM)…</p>
+        </div>
+
+        <!-- Leyenda del mapa -->
+        <div class="absolute bottom-4 left-4 z-10 bg-white/95 backdrop-blur rounded-lg px-3 py-2 shadow text-xs text-gray-600 space-y-1 border border-gray-100">
+          <div class="flex items-center gap-2"><span class="w-3 h-3 bg-green-600 rounded-full inline-block border-2 border-white"></span> Lima (Origen)</div>
+          <div class="flex items-center gap-2"><span class="w-3 h-3 bg-blue-600 rounded-full inline-block border-2 border-white"></span> Destino disponible</div>
+          <div class="flex items-center gap-2"><span class="w-3 h-3 bg-red-600 rounded-full inline-block border-2 border-white"></span> Destino seleccionado</div>
+          <div class="flex items-center gap-2"><span class="w-3 h-3 bg-amber-400 rounded-full inline-block border-2 border-white"></span> Parada intermedia</div>
+          <div class="flex items-center gap-2"><span class="w-6 h-1 bg-blue-600 inline-block rounded"></span> Ruta real (OSRM)</div>
+        </div>
+
+        <!-- Contador de destinos -->
+        <div id="badge-destinos" class="absolute top-3 right-3 z-10 bg-blue-700 text-white text-xs px-3 py-1 rounded-full font-semibold shadow hidden">
+          <i class="fa-solid fa-map-pin mr-1"></i><span id="num-destinos">0</span> destinos
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────────────────────────────────────────────
+         COLUMNA DERECHA: PANEL DE CONTROL (40%)
+    ────────────────────────────────────────────────────────────────────── -->
+    <section id="panel-derecho" class="flex-1 space-y-3">
+
+      <!-- ── SELECTOR DE DESTINO ─────────────────────────────────────── -->
+      <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
+        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+          <i class="fa-solid fa-location-dot text-blue-600 mr-1"></i>Destino
+        </label>
+        <select id="select-destino"
+          class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+          onchange="onCambioDestino()">
+          <option value="">— Selecciona un destino —</option>
+        </select>
+      </div>
+
+      <!-- ── PANEL BIENVENIDA (visible al inicio) ───────────────────── -->
+      <div id="panel-bienvenida" class="bg-gradient-to-br from-blue-50 to-slate-50 rounded-xl border border-blue-100 p-6 text-center">
+        <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+          <i class="fa-solid fa-route text-blue-600 text-2xl"></i>
+        </div>
+        <h2 class="font-bold text-slate-700 text-base mb-1">Selecciona un destino</h2>
+        <p class="text-slate-500 text-sm">Haz clic en un marcador del mapa o usa el selector de arriba para visualizar la ruta, métricas y simular costos de flete.</p>
+        <div id="resumen-global" class="grid grid-cols-3 gap-2 mt-4 text-center"></div>
+      </div>
+
+      <!-- ── PANEL DETALLE (oculto al inicio) ───────────────────────── -->
+      <div id="panel-detalle" class="hidden space-y-3 fade-in">
+
+        <!-- Agencia selector -->
+        <div class="bg-white rounded-xl shadow border border-slate-200 p-4">
+          <div class="flex items-center justify-between mb-2">
+            <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <i class="fa-solid fa-building text-blue-600 mr-1"></i>Agencia de Transporte
+            </label>
+            <span class="text-xs text-green-700 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full font-medium">
+              <i class="fa-solid fa-trophy text-green-600 mr-0.5"></i>Pre-seleccionada: menor tarifa/KG
+            </span>
+          </div>
+          <select id="select-agencia"
+            class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+            onchange="onCambioAgencia()">
+          </select>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-3 gap-2">
+          <!-- KM -->
+          <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow p-3 text-center">
+            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-1.5">
+              <i class="fa-solid fa-road text-blue-600 text-sm"></i>
+            </div>
+            <div id="kpi-km" class="text-2xl font-bold text-blue-700">—</div>
+            <div class="text-xs text-slate-500 font-medium mt-0.5">Kilómetros</div>
+          </div>
+          <!-- Horas -->
+          <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow p-3 text-center">
+            <div class="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center mx-auto mb-1.5">
+              <i class="fa-solid fa-clock text-violet-600 text-sm"></i>
+            </div>
+            <div id="kpi-horas" class="text-2xl font-bold text-violet-700">—</div>
+            <div class="text-xs text-slate-500 font-medium mt-0.5">Horas tránsito</div>
+          </div>
+          <!-- Tipo Viaje -->
+          <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow p-3 text-center">
+            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-1.5">
+              <i class="fa-solid fa-map-location-dot text-emerald-600 text-sm"></i>
+            </div>
+            <div id="kpi-tipo-viaje" class="text-xs font-bold px-2 py-1 rounded-full inline-block mt-0.5 badge-directo">—</div>
+            <div class="text-xs text-slate-500 font-medium mt-1">Tipo de viaje</div>
+          </div>
+        </div>
+
+        <!-- Paradas intermedias -->
+        <div id="bloque-paradas" class="hidden bg-amber-50 rounded-xl border border-amber-200 px-4 py-3">
+          <div class="flex items-start gap-2">
+            <i class="fa-solid fa-circle-nodes text-amber-500 mt-0.5 text-sm"></i>
+            <div>
+              <div class="text-xs font-semibold text-amber-700 mb-1">Paradas Intermedias</div>
+              <div id="kpi-paradas" class="text-xs text-amber-800 leading-5"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Métricas de la agencia seleccionada -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow p-4">
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-chart-bar text-blue-600 mr-1"></i>Historial Acumulado (Ene–May 2026)
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="text-center bg-slate-50 rounded-lg p-2 border border-slate-100">
+              <div id="stat-pedidos" class="font-bold text-slate-700 text-lg">—</div>
+              <div class="text-xs text-slate-500">Pedidos</div>
+            </div>
+            <div class="text-center bg-slate-50 rounded-lg p-2 border border-slate-100">
+              <div id="stat-peso" class="font-bold text-slate-700 text-lg">—</div>
+              <div class="text-xs text-slate-500">Peso (T)</div>
+            </div>
+            <div class="text-center bg-slate-50 rounded-lg p-2 border border-slate-100">
+              <div id="stat-flete" class="font-bold text-blue-700 text-lg">—</div>
+              <div class="text-xs text-slate-500">Flete ($)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarifas de referencia de la agencia -->
+        <div id="bloque-tarifas" class="bg-white rounded-xl border border-slate-200 shadow p-4">
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-tags text-blue-600 mr-1"></i>Tarifas de Referencia
+          </div>
+          <div id="lista-tarifas" class="space-y-2 text-sm"></div>
+        </div>
+
+        <!-- ── SIMULADOR DE COSTOS ─────────────────────────────────────── -->
+        <div class="bg-white rounded-xl border border-blue-200 shadow-md p-4">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <i class="fa-solid fa-calculator text-white text-sm"></i>
+            </div>
+            <div>
+              <div class="font-bold text-slate-800 text-sm">Simulador de Costos</div>
+              <div class="text-xs text-slate-500">Ingrese los valores para calcular el flete estimado</div>
+            </div>
+          </div>
+
+          <!-- Inputs -->
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <!-- Peso -->
+            <div>
+              <label class="block text-xs text-slate-600 font-semibold mb-1">
+                <i class="fa-solid fa-weight-hanging text-slate-400 mr-1"></i>Peso (KG)
+              </label>
+              <input id="input-peso" type="number" min="0" step="0.5" placeholder="Ej: 500"
+                class="w-full border border-slate-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                oninput="calcularCostos()" />
+            </div>
+            <!-- Bultos -->
+            <div>
+              <label class="block text-xs text-slate-600 font-semibold mb-1">
+                <i class="fa-solid fa-boxes-stacked text-slate-400 mr-1"></i>Bultos
+              </label>
+              <input id="input-bultos" type="number" min="0" step="1" placeholder="Ej: 10"
+                class="w-full border border-slate-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                oninput="calcularCostos()" />
+            </div>
+            <!-- Pedidos -->
+            <div>
+              <label class="block text-xs text-slate-600 font-semibold mb-1">
+                <i class="fa-solid fa-file-invoice text-slate-400 mr-1"></i>Pedidos
+              </label>
+              <input id="input-pedidos" type="number" min="0" step="1" placeholder="Ej: 5"
+                class="w-full border border-slate-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                oninput="calcularCostos()" />
+            </div>
+          </div>
+
+          <!-- Tabla de resultados -->
+          <div class="bg-slate-50 rounded-lg border border-slate-200 overflow-hidden">
+            <table class="w-full tabla-sim text-sm">
+              <thead>
+                <tr class="bg-slate-100 text-slate-600 text-xs">
+                  <th class="px-3 py-2 text-left font-semibold">Concepto</th>
+                  <th class="px-3 py-2 text-left font-semibold">Detalle</th>
+                  <th class="px-3 py-2 text-right font-semibold">Costo (USD)</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-simulador-body">
+                <tr>
+                  <td colspan="3" class="text-center text-slate-400 py-6 text-xs">
+                    <i class="fa-solid fa-arrow-up-from-bracket mr-1"></i>
+                    Ingrese valores para calcular
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Total y tarifa efectiva -->
+          <div class="mt-3 flex items-center justify-between">
+            <div id="panel-tarifa-efectiva" class="hidden text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg">
+              <i class="fa-solid fa-scale-balanced text-slate-400 mr-1"></i>
+              Tarifa efectiva: <span id="kpi-tarifa-efectiva" class="font-bold text-slate-700"></span>
+            </div>
+            <div class="ml-auto text-right">
+              <div class="text-xs text-slate-500 mb-0.5">Costo Total Neto</div>
+              <div class="text-2xl font-bold text-blue-700">
+                <span class="text-base text-slate-400 mr-0.5">$</span><span id="simulador-total">0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nota de fórmulas -->
+          <div class="mt-3 p-3 bg-blue-50 rounded-lg border border-blue-100 text-xs text-blue-700">
+            <i class="fa-solid fa-code mr-1"></i>
+            <strong>Nota para desarrolladores:</strong> Las fórmulas Excel están mapeadas en
+            la función <code class="bg-blue-100 px-1 rounded">calcularCostos()</code> del JS.
+            Busque los comentarios <code class="bg-blue-100 px-1 rounded">📌 MAPEAR AQUÍ</code>
+            para insertar lógica de tramos, mínimos o recargos adicionales.
+          </div>
+        </div>
+
+        <!-- Comparativa entre agencias -->
+        <div id="bloque-comparativa" class="bg-white rounded-xl border border-slate-200 shadow p-4">
+          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-arrow-right-arrow-left text-blue-600 mr-1"></i>
+            Comparativa de Agencias (por KG)
+          </div>
+          <div id="lista-comparativa" class="space-y-2"></div>
+        </div>
+
+        <!-- Comentarios de acción -->
+        <div id="bloque-comentarios" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div class="flex gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500 mt-0.5"></i>
+            <div>
+              <div class="text-xs font-bold text-amber-800 mb-1">Acciones Recomendadas</div>
+              <div id="texto-comentarios" class="text-xs text-amber-800 leading-5 space-y-1"></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /panel-detalle -->
+    </section>
+  </main>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+       JAVASCRIPT PRINCIPAL
+  ═════════════════════════════════════════════════════════════════════════ -->
+  <script>
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ESTADO GLOBAL
+  // ═══════════════════════════════════════════════════════════════════════════
+  let datos         = null;   // Contenido completo de data.json
+  let mapa          = null;   // Instancia de Leaflet
+  let capaRuta      = null;   // Polyline de la ruta activa
+  let capaParadas   = null;   // LayerGroup con marcadores de paradas y destino
+  let marcadoresDest = {};    // { id: elementoDOM } para el div-icon
+  let destinoActual = null;   // Objeto destino seleccionado
+  let agenciaActual = null;   // Objeto agencia seleccionada
+  let idActivoAntes = null;   // ID del destino previamente activo
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // INICIALIZACIÓN
+  // ═══════════════════════════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', inicializar);
+
+  async function inicializar() {
+    // 1 ─ Cargar data.json
+    try {
+      const resp = await fetch('data.json');
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      datos = await resp.json();
+    } catch (e) {
+      mostrarErrorCarga(e.message);
+      return;
+    }
+
+    // 2 ─ Inicializar mapa Leaflet centrado en Perú
+    mapa = L.map('mapa', {
+      center: [-9.5, -75.0],
+      zoom: 5,
+      zoomControl: true,
+    });
+
+    // Tile layer OpenStreetMap (gratuito, sin API key)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>',
+      maxZoom: 18,
+    }).addTo(mapa);
+
+    // LayerGroup para paradas y marcadores auxiliares
+    capaParadas = L.layerGroup().addTo(mapa);
+
+    // 3 ─ Marcador de Lima (origen fijo)
+    const iconoLima = L.divIcon({
+      className: '',
+      html: '<div class="marcador-lima"></div>',
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+    });
+    L.marker(datos.partida.coordenadas, { icon: iconoLima })
+      .addTo(mapa)
+      .bindPopup('<div class="text-sm"><b class="text-green-700">Lima</b><br><span class="text-gray-500">Punto de partida</span></div>');
+
+    // 4 ─ Marcadores de destinos
+    datos.destinos.forEach(dest => {
+      const siglas = dest.nombre.substring(0, 2).toUpperCase();
+      const iconoEl = document.createElement('div');
+      iconoEl.className = 'marcador-dest';
+      iconoEl.innerText = siglas;
+      iconoEl.title = dest.nombre;
+
+      const icono = L.divIcon({
+        className: '',
+        html: iconoEl.outerHTML,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      });
+
+      const marker = L.marker(dest.coordenadas, { icon: icono }).addTo(mapa);
+      marker.bindPopup(construirPopup(dest));
+      marker.on('click', () => seleccionarDestino(dest.id));
+
+      // Guardar referencia al elemento DOM del icono para cambiar clase "activo"
+      marker.on('add', () => {
+        // Buscamos el div del marcador por posición (Leaflet no expone el DOM fácilmente)
+        const el = marker.getElement();
+        if (el) {
+          el.style.cursor = 'pointer';
+          marcadoresDest[dest.id] = el;
+        }
+      });
+      // workaround: guardar el marker de Leaflet para acceder a getElement() luego
+      marcadoresDest[dest.id] = marker;
+    });
+
+    // 5 ─ Poblar selector de destinos
+    poblarSelectorDestinos();
+
+    // 6 ─ Badge con cantidad de destinos
+    document.getElementById('num-destinos').textContent = datos.destinos.length;
+    document.getElementById('badge-destinos').classList.remove('hidden');
+
+    // 7 ─ Resumen global en bienvenida
+    construirResumenGlobal();
+  }
+
+  function mostrarErrorCarga(msg) {
+    document.getElementById('contenedor-mapa').innerHTML = `
+      <div class="flex flex-col items-center justify-center h-full text-center p-8 text-slate-500">
+        <i class="fa-solid fa-circle-exclamation text-red-400 text-5xl mb-4"></i>
+        <h2 class="font-bold text-red-600 text-lg mb-2">No se pudo cargar data.json</h2>
+        <p class="text-sm max-w-sm">Ejecute primero: <code class="bg-slate-100 px-1 rounded">python procesar_datos.py</code></p>
+        <p class="text-xs mt-2 text-slate-400">${msg}</p>
+      </div>`;
+  }
+
+  // ─── Popup del marcador ───────────────────────────────────────────────────
+  function construirPopup(dest) {
+    const agsPeso = dest.agencias.filter(a => a.tarifa_por_peso !== null);
+    const minT = agsPeso.length > 0
+      ? `$${Math.min(...agsPeso.map(a => a.tarifa_por_peso)).toFixed(4)}/KG`
+      : '—';
+
+    return `<div class="text-sm min-w-[160px]">
+      <div class="font-bold text-blue-800 text-base mb-1">${dest.nombre}</div>
+      <div class="text-gray-500 text-xs mb-1">
+        <i class="fa-solid fa-road text-blue-400 mr-1"></i>${dest.km_referencia} KM &nbsp;|&nbsp;
+        <i class="fa-solid fa-clock text-violet-400 mr-1"></i>${dest.horas_referencia}h
+      </div>
+      <div class="text-xs mb-1">
+        <span class="px-2 py-0.5 rounded-full text-xs font-semibold ${dest.tipo_viaje_referencia === 'Directo' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">
+          ${dest.tipo_viaje_referencia}
+        </span>
+      </div>
+      <div class="text-xs text-green-700 font-semibold mt-1">Mejor tarifa: ${minT}</div>
+      <div class="text-xs text-gray-400">${dest.agencias.length} agencia(s)</div>
+      <button onclick="seleccionarDestino('${dest.id}')"
+        class="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-1 px-3 rounded-lg transition-colors">
+        <i class="fa-solid fa-route mr-1"></i>Ver ruta
+      </button>
+    </div>`;
+  }
+
+  // ─── Resumen global en panel de bienvenida ────────────────────────────────
+  function construirResumenGlobal() {
+    if (!datos) return;
+    const totalPedidos  = datos.destinos.reduce((s, d) => s + d.total_pedidos, 0);
+    const totalFlete    = datos.destinos.reduce((s, d) => s + d.total_flete_usd, 0);
+    const totalDest     = datos.destinos.length;
+    const cont = document.getElementById('resumen-global');
+    cont.innerHTML = `
+      <div class="bg-white rounded-lg p-3 border border-blue-100 shadow-sm">
+        <div class="text-xl font-bold text-blue-700">${totalDest}</div>
+        <div class="text-xs text-slate-500">Destinos</div>
+      </div>
+      <div class="bg-white rounded-lg p-3 border border-blue-100 shadow-sm">
+        <div class="text-xl font-bold text-blue-700">${totalPedidos.toLocaleString()}</div>
+        <div class="text-xs text-slate-500">Pedidos</div>
+      </div>
+      <div class="bg-white rounded-lg p-3 border border-blue-100 shadow-sm">
+        <div class="text-xl font-bold text-blue-700">$${(totalFlete/1000).toFixed(0)}K</div>
+        <div class="text-xs text-slate-500">Flete Total</div>
+      </div>`;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SELECTOR DE DESTINOS
+  // ═══════════════════════════════════════════════════════════════════════════
+  function poblarSelectorDestinos() {
+    const sel = document.getElementById('select-destino');
+    sel.innerHTML = '<option value="">— Selecciona un destino —</option>';
+    datos.destinos.forEach(dest => {
+      const opt = document.createElement('option');
+      opt.value = dest.id;
+      opt.textContent = `${dest.nombre}  (${dest.km_referencia} KM · ${dest.horas_referencia}h)`;
+      sel.appendChild(opt);
+    });
+  }
+
+  function onCambioDestino() {
+    const id = document.getElementById('select-destino').value;
+    if (!id) return;
+    seleccionarDestino(id);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SELECCIÓN DE DESTINO (evento central)
+  // ═══════════════════════════════════════════════════════════════════════════
+  function seleccionarDestino(id) {
+    destinoActual = datos.destinos.find(d => d.id === id);
+    if (!destinoActual) return;
+
+    // Sincronizar dropdown
+    document.getElementById('select-destino').value = id;
+
+    // Resetear clase activa del marcador anterior
+    if (idActivoAntes && marcadoresDest[idActivoAntes]) {
+      const elPrev = marcadoresDest[idActivoAntes].getElement();
+      if (elPrev) elPrev.querySelector('.marcador-dest')?.classList.remove('activo');
+    }
+    // Activar marcador actual
+    if (marcadoresDest[id]) {
+      const elCurr = marcadoresDest[id].getElement();
+      if (elCurr) elCurr.querySelector('.marcador-dest')?.classList.add('activo');
+    }
+    idActivoAntes = id;
+
+    // ── Determinar agencia más económica por tarifa/KG ─────────────────────
+    // Pre-selección: menor tarifa_por_peso disponible (puede ajustarse)
+    const conPeso = destinoActual.agencias.filter(a => a.tarifa_por_peso !== null);
+    agenciaActual = conPeso.length > 0
+      ? conPeso.reduce((min, a) => a.tarifa_por_peso < min.tarifa_por_peso ? a : min, conPeso[0])
+      : destinoActual.agencias[0];
+
+    // Poblar selector de agencias
+    poblarSelectorAgencias(agenciaActual.nombre);
+
+    // Actualizar panel
+    actualizarPanel();
+
+    // Dibujar ruta en mapa
+    dibujarRuta();
+
+    // Mostrar panel de detalle
+    document.getElementById('panel-bienvenida').classList.add('hidden');
+    const panelDetalle = document.getElementById('panel-detalle');
+    panelDetalle.classList.remove('hidden');
+    panelDetalle.classList.add('fade-in');
+
+    // Calcular costos con los valores actuales
+    calcularCostos();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SELECTOR DE AGENCIAS
+  // ═══════════════════════════════════════════════════════════════════════════
+  function poblarSelectorAgencias(nombreSeleccionado) {
+    const sel = document.getElementById('select-agencia');
+    sel.innerHTML = '';
+    destinoActual.agencias.forEach(ag => {
+      const opt = document.createElement('option');
+      opt.value = ag.nombre;
+      let tarifa = '';
+      if (ag.tarifa_por_peso !== null) {
+        tarifa = ` · $${ag.tarifa_por_peso.toFixed(4)}/KG`;
+      } else if (ag.tarifa_por_viaje !== null) {
+        tarifa = ` · $${ag.tarifa_por_viaje.toFixed(2)}/viaje`;
+      } else if (ag.tarifa_por_bulto !== null) {
+        tarifa = ` · $${ag.tarifa_por_bulto.toFixed(4)}/bulto`;
+      }
+      opt.textContent = `${ag.nombre}${tarifa}`;
+      if (ag.nombre === nombreSeleccionado) opt.selected = true;
+      sel.appendChild(opt);
+    });
+  }
+
+  function onCambioAgencia() {
+    const nombre = document.getElementById('select-agencia').value;
+    agenciaActual = destinoActual.agencias.find(a => a.nombre === nombre);
+    if (!agenciaActual) return;
+    actualizarPanel();
+    dibujarRuta();
+    calcularCostos();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ACTUALIZAR PANEL DE CONTROL
+  // ═══════════════════════════════════════════════════════════════════════════
+  function actualizarPanel() {
+    // ── KPIs ──────────────────────────────────────────────────────────────
+    document.getElementById('kpi-km').textContent    = agenciaActual.km.toLocaleString();
+    document.getElementById('kpi-horas').textContent = agenciaActual.horas;
+
+    const badgeTipo = document.getElementById('kpi-tipo-viaje');
+    badgeTipo.textContent = agenciaActual.tipo_viaje;
+    badgeTipo.className = agenciaActual.tipo_viaje === 'Directo'
+      ? 'text-xs font-bold px-2 py-1 rounded-full inline-block mt-0.5 badge-directo'
+      : 'text-xs font-bold px-2 py-1 rounded-full inline-block mt-0.5 badge-paradas';
+
+    // ── Paradas ────────────────────────────────────────────────────────────
+    const bloqParadas = document.getElementById('bloque-paradas');
+    if (agenciaActual.paradas && agenciaActual.paradas.length > 0) {
+      document.getElementById('kpi-paradas').innerHTML =
+        agenciaActual.paradas.map((p, i) =>
+          `<span class="inline-flex items-center gap-1">
+             <span class="w-4 h-4 bg-amber-400 text-white rounded-full inline-flex items-center justify-center text-xs font-bold">${i+1}</span>
+             <span>${p}</span>
+           </span>`
+        ).join(' <i class="fa-solid fa-chevron-right text-amber-300 text-xs mx-0.5"></i> ');
+      bloqParadas.classList.remove('hidden');
+    } else {
+      bloqParadas.classList.add('hidden');
+    }
+
+    // ── Estadísticas históricas ────────────────────────────────────────────
+    document.getElementById('stat-pedidos').textContent =
+      agenciaActual.total_pedidos.toLocaleString();
+    document.getElementById('stat-peso').textContent =
+      (agenciaActual.total_peso_kg / 1000).toFixed(1);
+    document.getElementById('stat-flete').textContent =
+      '$' + (agenciaActual.total_flete_usd / 1000).toFixed(1) + 'K';
+
+    // ── Tarifas de referencia ──────────────────────────────────────────────
+    const listaTarifas = document.getElementById('lista-tarifas');
+    const items = [];
+    if (agenciaActual.tarifa_por_peso !== null)
+      items.push({ icon: 'fa-weight-hanging', label: 'Tarifa por Peso', val: `$${agenciaActual.tarifa_por_peso.toFixed(6)}/KG`, color: 'blue' });
+    if (agenciaActual.tarifa_por_bulto !== null)
+      items.push({ icon: 'fa-boxes-stacked', label: 'Tarifa por Bulto', val: `$${agenciaActual.tarifa_por_bulto.toFixed(6)}/bulto`, color: 'violet' });
+    if (agenciaActual.tarifa_por_pedido !== null)
+      items.push({ icon: 'fa-file-invoice', label: 'Tarifa por Pedido', val: `$${agenciaActual.tarifa_por_pedido.toFixed(6)}/pedido`, color: 'emerald' });
+    if (agenciaActual.tarifa_por_viaje !== null)
+      items.push({ icon: 'fa-truck', label: 'Tarifa por Viaje (fija)', val: `$${agenciaActual.tarifa_por_viaje.toFixed(2)}/viaje`, color: 'amber' });
+
+    if (items.length === 0) {
+      listaTarifas.innerHTML = '<p class="text-xs text-slate-400 italic">Sin tarifas registradas para esta agencia.</p>';
+    } else {
+      listaTarifas.innerHTML = items.map(it => `
+        <div class="flex items-center justify-between bg-${it.color}-50 border border-${it.color}-100 rounded-lg px-3 py-2">
+          <span class="text-xs text-${it.color}-700 font-medium">
+            <i class="fa-solid ${it.icon} mr-1.5 text-${it.color}-500"></i>${it.label}
+          </span>
+          <span class="text-xs font-bold text-${it.color}-800">${it.val}</span>
+        </div>`).join('');
+    }
+
+    // ── Comparativa entre agencias ────────────────────────────────────────
+    const listaComp = document.getElementById('lista-comparativa');
+    const agsConPeso = destinoActual.agencias.filter(a => a.tarifa_por_peso !== null);
+    if (agsConPeso.length > 0) {
+      const minT = Math.min(...agsConPeso.map(a => a.tarifa_por_peso));
+      listaComp.innerHTML = agsConPeso.map(ag => {
+        const pct = ((ag.tarifa_por_peso / minT) * 100).toFixed(0);
+        const esMenor = ag.tarifa_por_peso === minT;
+        return `<div class="flex items-center gap-2">
+          <div class="text-xs w-28 truncate font-medium ${esMenor ? 'text-green-700' : 'text-slate-600'}" title="${ag.nombre}">
+            ${esMenor ? '<i class="fa-solid fa-crown text-green-500 mr-0.5 text-xs"></i>' : ''}${ag.nombre}
+          </div>
+          <div class="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+            <div class="h-2 rounded-full ${esMenor ? 'bg-green-500' : 'bg-blue-400'}" style="width:${Math.min(pct,100)}%"></div>
+          </div>
+          <div class="text-xs font-bold w-20 text-right ${esMenor ? 'text-green-700' : 'text-slate-600'}">
+            $${ag.tarifa_por_peso.toFixed(4)}/KG
+          </div>
+        </div>`;
+      }).join('');
+      document.getElementById('bloque-comparativa').classList.remove('hidden');
+    } else {
+      document.getElementById('bloque-comparativa').classList.add('hidden');
+    }
+
+    // ── Comentarios de acción ──────────────────────────────────────────────
+    const coments = [...new Set(
+      destinoActual.agencias
+        .map(a => a.comentarios)
+        .filter(c => c && c !== 'null')
+    )];
+    const bloqComent = document.getElementById('bloque-comentarios');
+    if (coments.length > 0) {
+      document.getElementById('texto-comentarios').innerHTML =
+        coments.map(c => `<div>• ${c}</div>`).join('');
+      bloqComent.classList.remove('hidden');
+    } else {
+      bloqComent.classList.add('hidden');
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DIBUJAR RUTA (OSRM + fallback línea recta)
+  // ═══════════════════════════════════════════════════════════════════════════
+  async function dibujarRuta() {
+    // Limpiar capas previas
+    if (capaRuta) { mapa.removeLayer(capaRuta); capaRuta = null; }
+    capaParadas.clearLayers();
+
+    const lima      = datos.partida.coordenadas;          // [lat, lng]
+    const destCoord = destinoActual.coordenadas;           // [lat, lng]
+    const paradasC  = agenciaActual.paradas_coords || [];  // [[lat,lng],...]
+
+    // Waypoints en orden: Lima → paradas → destino
+    const waypoints = [lima, ...paradasC, destCoord];
+
+    // OSRM requiere formato "lng,lat" separados por ";"
+    const coordsOSRM = waypoints.map(c => `${c[1]},${c[0]}`).join(';');
+    const urlOSRM = `https://router.project-osrm.org/route/v1/driving/${coordsOSRM}?overview=full&geometries=geojson`;
+
+    document.getElementById('mapa-cargando').classList.remove('hidden');
+
+    try {
+      const resp = await fetch(urlOSRM, { signal: AbortSignal.timeout(8000) });
+      const json = await resp.json();
+
+      if (json.code === 'Ok' && json.routes.length > 0) {
+        // GeoJSON devuelve [lng, lat] → convertir a [lat, lng] para Leaflet
+        const coordsLeaflet = json.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+        capaRuta = L.polyline(coordsLeaflet, {
+          color: '#2563EB', weight: 5, opacity: 0.85, smoothFactor: 1,
+        }).addTo(mapa);
+        mapa.fitBounds(capaRuta.getBounds(), { padding: [50, 50] });
+        document.getElementById('estado-osrm').classList.remove('hidden');
+      } else {
+        throw new Error('Sin ruta OSRM');
+      }
+    } catch {
+      // Fallback: polilínea recta
+      capaRuta = L.polyline(waypoints, {
+        color: '#2563EB', weight: 4, opacity: 0.6, dashArray: '10, 8',
+      }).addTo(mapa);
+      mapa.fitBounds(capaRuta.getBounds(), { padding: [50, 50] });
+    } finally {
+      document.getElementById('mapa-cargando').classList.add('hidden');
+    }
+
+    // ── Marcador de Lima ───────────────────────────────────────────────────
+    L.marker(lima, {
+      icon: L.divIcon({ className:'', html:'<div class="marcador-lima"></div>', iconSize:[18,18], iconAnchor:[9,9] })
+    }).addTo(capaParadas).bindTooltip('Lima (Origen)', { direction:'top', offset:[0,-4] });
+
+    // ── Marcadores de paradas intermedias ─────────────────────────────────
+    agenciaActual.paradas.forEach((nombre, i) => {
+      const coord = paradasC[i];
+      if (!coord) return;
+      L.marker(coord, {
+        icon: L.divIcon({ className:'', html:'<div class="marcador-parada"></div>', iconSize:[14,14], iconAnchor:[7,7] })
+      }).addTo(capaParadas)
+        .bindTooltip(`Parada ${i+1}: ${nombre}`, { direction:'top', offset:[0,-4] });
+    });
+
+    // ── Marcador de destino ────────────────────────────────────────────────
+    L.marker(destCoord, {
+      icon: L.divIcon({
+        className: '',
+        html: `<div style="width:22px;height:22px;background:#dc2626;border:3px solid #fff;border-radius:50%;
+                           box-shadow:0 2px 8px rgba(220,38,38,.5);display:flex;align-items:center;
+                           justify-content:center;">
+                 <div style="width:6px;height:6px;background:#fff;border-radius:50%;"></div>
+               </div>`,
+        iconSize: [22, 22], iconAnchor: [11, 11],
+      })
+    }).addTo(capaParadas)
+      .bindTooltip(`${destinoActual.nombre} (Destino)`, { permanent: false, direction:'top', offset:[0,-6] });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SIMULADOR DE COSTOS
+  // ═══════════════════════════════════════════════════════════════════════════
+  function calcularCostos() {
+    if (!agenciaActual || !destinoActual) return;
+
+    // ─── LEER INPUTS ──────────────────────────────────────────────────────
+    const pesoKg     = parseFloat(document.getElementById('input-peso').value)    || 0;
+    const numBultos  = parseInt(document.getElementById('input-bultos').value)    || 0;
+    const numPedidos = parseInt(document.getElementById('input-pedidos').value)   || 0;
+
+    const filas = [];
+    let costoTotal = 0;
+
+    // ─── FÓRMULA POR PESO ─────────────────────────────────────────────────
+    // Excel col "Tarifa /Por Peso": Importe = Peso(KG) × Tarifa
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📌 MAPEAR AQUÍ: peso mínimo facturable
+    //    const PESO_MINIMO_KG = 50;
+    //    const pesoEfectivo = Math.max(pesoKg, PESO_MINIMO_KG);
+    //
+    // 📌 MAPEAR AQUÍ: escala por tramos (ejemplo):
+    //    if (pesoKg <= 100)       tarifaUsada = ag.tarifa_tramo1;
+    //    else if (pesoKg <= 500)  tarifaUsada = ag.tarifa_tramo2;
+    //    else                     tarifaUsada = ag.tarifa_tramo3;
+    // ═══════════════════════════════════════════════════════════════════════
+    if (agenciaActual.tarifa_por_peso !== null && pesoKg > 0) {
+      const pesoEfectivo = pesoKg;  // ← ajustar si hay mínimo
+      const costo = pesoEfectivo * agenciaActual.tarifa_por_peso;
+      filas.push({
+        concepto : 'Flete por Peso',
+        detalle  : `${pesoEfectivo.toLocaleString()} KG × $${agenciaActual.tarifa_por_peso.toFixed(6)}/KG`,
+        valor    : costo,
+        tipo     : 'base',
+      });
+      costoTotal += costo;
+    }
+
+    // ─── FÓRMULA POR BULTO ────────────────────────────────────────────────
+    // Excel col "Tarifa Por Bulto": Importe = Bultos × Tarifa
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📌 MAPEAR AQUÍ: bultos mínimos o cargos fijos por paquetería
+    //    const BULTOS_MINIMOS = 5;
+    //    const bultosEfectivos = Math.max(numBultos, BULTOS_MINIMOS);
+    // ═══════════════════════════════════════════════════════════════════════
+    if (agenciaActual.tarifa_por_bulto !== null && numBultos > 0) {
+      const bultosEfectivos = numBultos;  // ← ajustar si hay mínimo
+      const costo = bultosEfectivos * agenciaActual.tarifa_por_bulto;
+      filas.push({
+        concepto : 'Flete por Bulto',
+        detalle  : `${bultosEfectivos} bulto(s) × $${agenciaActual.tarifa_por_bulto.toFixed(6)}/bulto`,
+        valor    : costo,
+        tipo     : 'base',
+      });
+      costoTotal += costo;
+    }
+
+    // ─── FÓRMULA POR PEDIDO ───────────────────────────────────────────────
+    // Excel col "Tarifa Por Pedido": Importe = Pedidos × Tarifa
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📌 MAPEAR AQUÍ: descuento por volumen de pedidos
+    //    if (numPedidos >= 1000) tarifa = ag.tarifa_por_pedido * 0.95;
+    // ═══════════════════════════════════════════════════════════════════════
+    if (agenciaActual.tarifa_por_pedido !== null && numPedidos > 0) {
+      const costo = numPedidos * agenciaActual.tarifa_por_pedido;
+      filas.push({
+        concepto : 'Flete por Pedido',
+        detalle  : `${numPedidos} pedido(s) × $${agenciaActual.tarifa_por_pedido.toFixed(6)}/pedido`,
+        valor    : costo,
+        tipo     : 'base',
+      });
+      costoTotal += costo;
+    }
+
+    // ─── FÓRMULA POR VIAJE (tarifa plana) ─────────────────────────────────
+    // Excel col "Tarifa Por Viaje": costo fijo independiente del peso
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📌 MAPEAR AQUÍ: si la tarifa varía por número de viajes o capacidad:
+    //    const numViajes = Math.ceil(pesoKg / CAPACIDAD_MAX_KG);
+    //    const costo = numViajes * ag.tarifa_por_viaje;
+    // ═══════════════════════════════════════════════════════════════════════
+    if (agenciaActual.tarifa_por_viaje !== null) {
+      filas.push({
+        concepto : 'Tarifa por Viaje (Fija)',
+        detalle  : `Tarifa plana $${agenciaActual.tarifa_por_viaje.toFixed(2)} por despacho`,
+        valor    : agenciaActual.tarifa_por_viaje,
+        tipo     : 'base',
+      });
+      costoTotal += agenciaActual.tarifa_por_viaje;
+    }
+
+    // ─── COSTOS ADICIONALES ───────────────────────────────────────────────
+    // ═══════════════════════════════════════════════════════════════════════
+    // 📌 MAPEAR AQUÍ: Recargo por combustible (fuel surcharge)
+    //    const RECARGO_COMBUSTIBLE_PCT = 0.08;  // 8%
+    //    if (costoBase > 0) {
+    //      const recargo = costoBase * RECARGO_COMBUSTIBLE_PCT;
+    //      filas.push({ concepto:'Recargo Combustible', detalle:`8% sobre base`, valor:recargo, tipo:'adicional' });
+    //      costoTotal += recargo;
+    //    }
+    //
+    // 📌 MAPEAR AQUÍ: Seguro de carga (% sobre valor declarado)
+    //    const valorDeclarado = parseFloat(document.getElementById('input-valor').value) || 0;
+    //    const PCT_SEGURO = 0.005;  // 0.5% del valor declarado
+    //    if (valorDeclarado > 0) {
+    //      const seguro = valorDeclarado * PCT_SEGURO;
+    //      filas.push({ concepto:'Seguro de Carga', detalle:`0.5% de $${valorDeclarado}`, valor:seguro, tipo:'adicional' });
+    //      costoTotal += seguro;
+    //    }
+    //
+    // 📌 MAPEAR AQUÍ: Cargo por zona de difícil acceso (paradas)
+    //    if (agenciaActual.tipo_viaje === 'Con Paradas') {
+    //      const CARGO_PARADAS = 15.00;
+    //      filas.push({ concepto:'Cargo paradas intermedias', detalle:`Ruta con ${agenciaActual.paradas.length} paradas`, valor:CARGO_PARADAS, tipo:'adicional' });
+    //      costoTotal += CARGO_PARADAS;
+    //    }
+    // ═══════════════════════════════════════════════════════════════════════
+
+    renderizarTabla(filas, costoTotal, pesoKg);
+  }
+
+  // ─── Renderizar tabla del simulador ──────────────────────────────────────
+  function renderizarTabla(filas, total, pesoKg) {
+    const tbody   = document.getElementById('tabla-simulador-body');
+    const totalEl = document.getElementById('simulador-total');
+
+    if (filas.length === 0) {
+      tbody.innerHTML = `<tr>
+        <td colspan="3" class="text-center text-slate-400 py-6 text-xs">
+          <i class="fa-solid fa-arrow-up-from-bracket mr-1"></i>Ingrese valores para calcular
+        </td></tr>`;
+      totalEl.textContent = '0.00';
+      document.getElementById('panel-tarifa-efectiva').classList.add('hidden');
+      return;
+    }
+
+    tbody.innerHTML = filas.map((f, i) => {
+      const isAdicional = f.tipo === 'adicional';
+      return `<tr class="border-b border-slate-100 ${isAdicional ? 'bg-amber-50' : i % 2 === 0 ? 'bg-white' : 'bg-slate-50/60'}">
+        <td class="px-3 py-2 text-xs font-semibold text-slate-700 whitespace-nowrap">
+          ${isAdicional ? '<i class="fa-solid fa-plus text-amber-500 mr-1 text-xs"></i>' : ''}${f.concepto}
+        </td>
+        <td class="px-3 py-2 text-xs text-slate-500">${f.detalle}</td>
+        <td class="px-3 py-2 text-sm font-bold text-right ${isAdicional ? 'text-amber-700' : 'text-blue-700'} whitespace-nowrap">
+          $${f.valor.toFixed(2)}
+        </td>
+      </tr>`;
+    }).join('');
+
+    totalEl.textContent = total.toFixed(2);
+
+    // Tarifa efectiva por KG
+    const panelTarifa = document.getElementById('panel-tarifa-efectiva');
+    if (pesoKg > 0 && total > 0) {
+      document.getElementById('kpi-tarifa-efectiva').textContent = `$${(total / pesoKg).toFixed(4)}/KG`;
+      panelTarifa.classList.remove('hidden');
+    } else {
+      panelTarifa.classList.add('hidden');
+    }
+  }
+
+  </script>
+</body>
+</html>
