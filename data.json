@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generado": "2026-06-18T12:49:02.448121",
+    "generado": "2026-06-18T14:24:56.725740",
     "periodo": "Ene-May 2026",
     "moneda": "USD"
   },
@@ -14,54 +14,70 @@
   "destinos": [
     {
       "id": "ancash",
-      "nombre": "Ancash",
+      "nombre": "Ancásh",
+      "nombre_grafico": "ANC",
       "coordenadas": [
         -9.5164189,
         -77.5302062
       ],
-      "km_referencia": 407,
-      "horas_referencia": 12,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 2435,
-      "total_flete_usd": 30441.08,
-      "total_peso_kg": 144892.48,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.185366,
           "km": 438,
           "horas": 11,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 1563,
+          "total_bultos": 5279,
+          "flete_venta_usd": 0.022528,
           "tarifa_por_peso": 0.10357589,
           "tarifa_por_bulto": 3.7565251,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1563,
-          "total_flete_usd": 19243.12,
-          "total_peso_kg": 94321.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -9.0602304,
+            -78.5899671
+          ]
         },
         {
           "nombre": "Quiñones",
+          "costo_kg_ponderado": 0.185502,
           "km": 438,
           "horas": 11,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 2,
+          "total_bultos": 2,
+          "flete_venta_usd": 0.07649,
           "tarifa_por_peso": 0.18550233,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
+          "coordenadas_llegada": [
+            -9.0602304,
+            -78.5899671
+          ]
+        },
+        {
+          "nombre": "Joaquin Transport",
+          "costo_kg_ponderado": 0.271395,
+          "km": 438,
+          "horas": 11,
+          "tipo_viaje": "Directo",
+          "paradas": [],
+          "paradas_coords": [],
           "total_pedidos": 2,
-          "total_flete_usd": 16.53,
-          "total_peso_kg": 89.12,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
+          "total_bultos": 3,
+          "flete_venta_usd": 0.117555,
+          "tarifa_por_peso": 0.27139452,
+          "tarifa_por_bulto": null,
+          "coordenadas_llegada": [
+            -9.0602304,
+            -78.5899671
+          ]
         },
         {
           "nombre": "Marvisur",
+          "costo_kg_ponderado": 0.281136,
           "km": 407,
           "horas": 12,
           "tipo_viaje": "Con Paradas",
@@ -99,68 +115,48 @@
               -77.5278
             ]
           ],
+          "total_pedidos": 868,
+          "total_bultos": 2764,
+          "flete_venta_usd": 0.047532,
           "tarifa_por_peso": 0.22137825,
           "tarifa_por_bulto": 5.07145273,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 868,
-          "total_flete_usd": 11143.12,
-          "total_peso_kg": 50341.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
-        },
-        {
-          "nombre": "Joaquin Transport",
-          "km": 438,
-          "horas": 11,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
-          "tarifa_por_peso": 0.27139452,
-          "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 2,
-          "total_flete_usd": 38.31,
-          "total_peso_kg": 141.12,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -9.5164189,
+            -77.5302062
+          ]
         }
       ]
     },
     {
       "id": "apurimac",
       "nombre": "Apurímac",
+      "nombre_grafico": "APU",
       "coordenadas": [
         -13.6336642,
         -72.9026694
       ],
-      "km_referencia": 1256,
-      "horas_referencia": 26,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 1368,
-      "total_flete_usd": 14918.1,
-      "total_peso_kg": 57753.24,
       "agencias": [
         {
           "nombre": "Arellano",
+          "costo_kg_ponderado": 0.257959,
           "km": 1256,
           "horas": 22,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 1,
+          "total_bultos": 25,
+          "flete_venta_usd": 0.104965,
           "tarifa_por_peso": 0.25795921,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1,
-          "total_flete_usd": 106.29,
-          "total_peso_kg": 412.12,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -13.6336642,
+            -72.9026694
+          ]
         },
         {
           "nombre": "Marvisur",
+          "costo_kg_ponderado": 0.385457,
           "km": 1256,
           "horas": 26,
           "tipo_viaje": "Con Paradas",
@@ -203,34 +199,30 @@
               -72.8833
             ]
           ],
+          "total_pedidos": 1367,
+          "total_bultos": 3838,
+          "flete_venta_usd": 0.055178,
           "tarifa_por_peso": 0.25812176,
           "tarifa_por_bulto": 6.40353905,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1367,
-          "total_flete_usd": 14811.81,
-          "total_peso_kg": 57341.12,
-          "comentarios": "Evaluar nuevas alternativas de proveedores",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -13.6336642,
+            -72.9026694
+          ]
         }
       ]
     },
     {
       "id": "arequipa",
       "nombre": "Arequipa",
+      "nombre_grafico": "ARQ",
       "coordenadas": [
         -16.4027742,
         -71.5731079
       ],
-      "km_referencia": 966,
-      "horas_referencia": 20,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 9825,
-      "total_flete_usd": 174101.17,
-      "total_peso_kg": 527815.32,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.163735,
           "km": 966,
           "horas": 20,
           "tipo_viaje": "Con Paradas",
@@ -258,35 +250,55 @@
               -71.9333
             ]
           ],
+          "total_pedidos": 1291,
+          "total_bultos": 5187,
+          "flete_venta_usd": 0.021926,
           "tarifa_por_peso": 0.10737715,
           "tarifa_por_bulto": 3.75924817,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1291,
-          "total_flete_usd": 22601.1,
-          "total_peso_kg": 89263.91,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -16.3569818,
+            -72.1909656
+          ]
         },
         {
           "nombre": "Tralex Cargo",
+          "costo_kg_ponderado": 0.214534,
           "km": 986,
           "horas": 26,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 31,
+          "total_bultos": 147,
+          "flete_venta_usd": 0.037701,
           "tarifa_por_peso": 0.1913107,
           "tarifa_por_bulto": 4.29304193,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 31,
-          "total_flete_usd": 1210.64,
-          "total_peso_kg": 1019.52,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -16.4027742,
+            -71.5731079
+          ]
+        },
+        {
+          "nombre": "Samka",
+          "costo_kg_ponderado": 0.342538,
+          "km": 986,
+          "horas": 26,
+          "tipo_viaje": "Directo",
+          "paradas": [],
+          "paradas_coords": [],
+          "total_pedidos": 8389,
+          "total_bultos": 29411,
+          "flete_venta_usd": 0.059741,
+          "tarifa_por_peso": 0.26514546,
+          "tarifa_por_bulto": null,
+          "coordenadas_llegada": [
+            -16.4027742,
+            -71.5731079
+          ]
         },
         {
           "nombre": "Marvisur",
+          "costo_kg_ponderado": 0.376135,
           "km": 966,
           "horas": 20,
           "tipo_viaje": "Con Paradas",
@@ -354,51 +366,84 @@
               -71.8833
             ]
           ],
+          "total_pedidos": 114,
+          "total_bultos": 239,
+          "flete_venta_usd": 0.042962,
           "tarifa_por_peso": 0.24923394,
           "tarifa_por_bulto": 5.30010763,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 114,
-          "total_flete_usd": 1784.22,
-          "total_peso_kg": 3988.5,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
-        },
-        {
-          "nombre": "Samka",
-          "km": 986,
-          "horas": 26,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
-          "tarifa_por_peso": 0.26514546,
-          "tarifa_por_bulto": null,
-          "tarifa_por_pedido": 10.90960052,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 8389,
-          "total_flete_usd": 148505.21,
-          "total_peso_kg": 433543.39,
-          "comentarios": "Negociar reducción de tarifas / Evaluar nuevos proveedores",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -16.4278283,
+            -71.8218597
+          ]
         }
       ]
     },
     {
       "id": "ayacucho",
       "nombre": "Ayacucho",
+      "nombre_grafico": "AYC",
       "coordenadas": [
         -13.1627116,
         -74.225892
       ],
-      "km_referencia": 766,
-      "horas_referencia": 18,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 1811,
-      "total_flete_usd": 28767.86,
-      "total_peso_kg": 113144.88,
       "agencias": [
         {
+          "nombre": "Arellano",
+          "costo_kg_ponderado": 0.260315,
+          "km": 766,
+          "horas": 17,
+          "tipo_viaje": "Directo",
+          "paradas": [],
+          "paradas_coords": [],
+          "total_pedidos": 18,
+          "total_bultos": 31,
+          "flete_venta_usd": 0.090693,
+          "tarifa_por_peso": 0.26031519,
+          "tarifa_por_bulto": null,
+          "coordenadas_llegada": [
+            -13.1627116,
+            -74.225892
+          ]
+        },
+        {
+          "nombre": "Andrea & Daniela",
+          "costo_kg_ponderado": 0.304107,
+          "km": 766,
+          "horas": 17,
+          "tipo_viaje": "Directo",
+          "paradas": [],
+          "paradas_coords": [],
+          "total_pedidos": 1,
+          "total_bultos": 1,
+          "flete_venta_usd": 0.12603,
+          "tarifa_por_peso": 0.30410688,
+          "tarifa_por_bulto": null,
+          "coordenadas_llegada": [
+            -13.1627116,
+            -74.225892
+          ]
+        },
+        {
+          "nombre": "Joaquin Transport",
+          "costo_kg_ponderado": 0.318419,
+          "km": 766,
+          "horas": 17,
+          "tipo_viaje": "Directo",
+          "paradas": [],
+          "paradas_coords": [],
+          "total_pedidos": 41,
+          "total_bultos": 76,
+          "flete_venta_usd": 0.119665,
+          "tarifa_por_peso": 0.31841943,
+          "tarifa_por_bulto": null,
+          "coordenadas_llegada": [
+            -13.1627116,
+            -74.225892
+          ]
+        },
+        {
           "nombre": "Marvisur",
+          "costo_kg_ponderado": 0.324741,
           "km": 766,
           "horas": 18,
           "tipo_viaje": "Con Paradas",
@@ -426,225 +471,184 @@
               -74.2259
             ]
           ],
+          "total_pedidos": 1881,
+          "total_bultos": 5030,
+          "flete_venta_usd": 0.05557,
           "tarifa_por_peso": 0.23417569,
           "tarifa_por_bulto": 5.14256128,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1234,
-          "total_flete_usd": 18342.11,
-          "total_peso_kg": 78341.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
-        },
-        {
-          "nombre": "Arellano",
-          "km": 766,
-          "horas": 18,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
-          "tarifa_por_peso": 0.26031519,
-          "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 156,
-          "total_flete_usd": 2141.71,
-          "total_peso_kg": 8231.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
-        },
-        {
-          "nombre": "Andrea & Daniela",
-          "km": 766,
-          "horas": 18,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
-          "tarifa_por_peso": 0.30410688,
-          "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 187,
-          "total_flete_usd": 3754.02,
-          "total_peso_kg": 12341.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
-        },
-        {
-          "nombre": "Joaquin Transport",
-          "km": 766,
-          "horas": 18,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
-          "tarifa_por_peso": 0.31841943,
-          "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 234,
-          "total_flete_usd": 4530.02,
-          "total_peso_kg": 14231.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -13.1627116,
+            -74.225892
+          ]
         }
       ]
     },
     {
       "id": "chiclayo",
       "nombre": "Chiclayo",
+      "nombre_grafico": "CHC",
       "coordenadas": [
         -6.8009126,
         -79.8525062
       ],
-      "km_referencia": 866,
-      "horas_referencia": 20,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 4706,
-      "total_flete_usd": 54351.48,
-      "total_peso_kg": 220893.36,
       "agencias": [
         {
           "nombre": "Aval",
+          "costo_kg_ponderado": 0.163591,
           "km": 866,
           "horas": 20,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 2134,
+          "total_bultos": 9880,
+          "flete_venta_usd": 0.028982,
           "tarifa_por_peso": 0.1237626,
           "tarifa_por_bulto": 3.98656757,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 3241,
-          "total_flete_usd": 37543.12,
-          "total_peso_kg": 154231.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -6.8009126,
+            -79.8525062
+          ]
         },
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.191722,
           "km": 866,
           "horas": 20,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
+          "tipo_viaje": "Con Paradas",
+          "paradas": [
+            "Chiclayo",
+            "Lambayeque",
+            "Olmos"
+          ],
+          "paradas_coords": [
+            [
+              -6.7713,
+              -79.8367
+            ],
+            [
+              -6.7012,
+              -79.906
+            ],
+            [
+              -5.9833,
+              -79.75
+            ]
+          ],
+          "total_pedidos": 1726,
+          "total_bultos": 6154,
+          "flete_venta_usd": 0.031882,
           "tarifa_por_peso": 0.13801029,
           "tarifa_por_bulto": 3.91137896,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1231,
-          "total_flete_usd": 14231.12,
-          "total_peso_kg": 54321.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -6.8009126,
+            -79.8525062
+          ]
         },
         {
           "nombre": "Joaquin Transport",
+          "costo_kg_ponderado": 0.20877,
           "km": 866,
           "horas": 20,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 6,
+          "total_bultos": 26,
+          "flete_venta_usd": 0.083576,
           "tarifa_por_peso": 0.20876976,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 234,
-          "total_flete_usd": 2577.24,
-          "total_peso_kg": 12341.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -6.8009126,
+            -79.8525062
+          ]
         }
       ]
     },
     {
       "id": "cusco",
       "nombre": "Cusco",
+      "nombre_grafico": "CUS",
       "coordenadas": [
         -13.5333198,
         -71.9433903
       ],
-      "km_referencia": 1093,
-      "horas_referencia": 34,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 5342,
-      "total_flete_usd": 95171.28,
-      "total_peso_kg": 283097.55,
       "agencias": [
         {
-          "nombre": "Grael",
-          "km": 1752,
-          "horas": 48,
-          "tipo_viaje": "Con Paradas",
-          "paradas": [
-            "Cusco",
-            "Espinar",
-            "Sicuani",
-            "Quillabamba"
-          ],
-          "paradas_coords": [
-            [
-              -13.5333,
-              -71.9434
-            ],
-            [
-              -14.7833,
-              -71.4167
-            ],
-            [
-              -14.25,
-              -71.2167
-            ],
-            [
-              -12.8667,
-              -72.6833
-            ]
-          ],
-          "tarifa_por_peso": 0.19281523,
-          "tarifa_por_bulto": 3.77412419,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 847,
-          "total_flete_usd": 9578.24,
-          "total_peso_kg": 49782.51,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "nombre": "Arellano",
+          "costo_kg_ponderado": 0.23627,
+          "km": 1093,
+          "horas": 34,
+          "tipo_viaje": "Directo",
+          "paradas": [],
+          "paradas_coords": [],
+          "total_pedidos": 114,
+          "total_bultos": 518,
+          "flete_venta_usd": 0.068317,
+          "tarifa_por_peso": 0.23627021,
+          "tarifa_por_bulto": null,
+          "coordenadas_llegada": [
+            -13.5333198,
+            -71.9433903
+          ]
         },
         {
           "nombre": "Navitas",
+          "costo_kg_ponderado": 0.256354,
           "km": 1093,
           "horas": 34,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 4303,
+          "total_bultos": 18866,
+          "flete_venta_usd": 0.046135,
           "tarifa_por_peso": 0.20826833,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": 7.83346316,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 4303,
-          "total_flete_usd": 79989.72,
-          "total_peso_kg": 212089.6,
-          "comentarios": "Negociar reducción de tarifas / Evaluar nuevos proveedores",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -13.5333198,
+            -71.9433903
+          ]
         },
         {
-          "nombre": "Arellano",
+          "nombre": "Andrea & Daniela",
+          "costo_kg_ponderado": 0.263641,
           "km": 1093,
           "horas": 34,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
-          "tarifa_por_peso": 0.23627021,
+          "total_pedidos": 44,
+          "total_bultos": 568,
+          "flete_venta_usd": 0.075662,
+          "tarifa_por_peso": 0.26364146,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 114,
-          "total_flete_usd": 1940.82,
-          "total_peso_kg": 8217.42,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -13.5333198,
+            -71.9433903
+          ]
+        },
+        {
+          "nombre": "Joaquin Transport",
+          "costo_kg_ponderado": 0.265817,
+          "km": 1093,
+          "horas": 34,
+          "tipo_viaje": "Directo",
+          "paradas": [],
+          "paradas_coords": [],
+          "total_pedidos": 21,
+          "total_bultos": 252,
+          "flete_venta_usd": 0.100742,
+          "tarifa_por_peso": 0.2658175,
+          "tarifa_por_bulto": null,
+          "coordenadas_llegada": [
+            -13.5333198,
+            -71.9433903
+          ]
         },
         {
           "nombre": "Marvisur",
+          "costo_kg_ponderado": 0.266768,
           "km": 1093,
           "horas": 34,
           "tipo_viaje": "Con Paradas",
@@ -677,85 +681,88 @@
               -71.9434
             ]
           ],
+          "total_pedidos": 10,
+          "total_bultos": 66,
+          "flete_venta_usd": 0.048934,
           "tarifa_por_peso": 0.26003765,
           "tarifa_por_bulto": 6.24442462,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 10,
-          "total_flete_usd": 451.62,
-          "total_peso_kg": 1034.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -13.5333198,
+            -71.9433903
+          ]
         },
         {
-          "nombre": "Andrea & Daniela",
-          "km": 1093,
-          "horas": 34,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
-          "tarifa_por_peso": 0.26364146,
-          "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 44,
-          "total_flete_usd": 1427.64,
-          "total_peso_kg": 5412.31,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
-        },
-        {
-          "nombre": "Joaquin Transport",
-          "km": 1093,
-          "horas": 34,
-          "tipo_viaje": "Directo",
-          "paradas": [],
-          "paradas_coords": [],
-          "tarifa_por_peso": 0.2658175,
-          "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 21,
-          "total_flete_usd": 1653.41,
-          "total_peso_kg": 6218.67,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "nombre": "Grael",
+          "costo_kg_ponderado": 0.270389,
+          "km": 1752,
+          "horas": 48,
+          "tipo_viaje": "Con Paradas",
+          "paradas": [
+            "Cusco",
+            "Espinar",
+            "Sicuani",
+            "Quillabamba"
+          ],
+          "paradas_coords": [
+            [
+              -13.5333,
+              -71.9434
+            ],
+            [
+              -14.7833,
+              -71.4167
+            ],
+            [
+              -14.25,
+              -71.2167
+            ],
+            [
+              -12.8667,
+              -72.6833
+            ]
+          ],
+          "total_pedidos": 847,
+          "total_bultos": 2409,
+          "flete_venta_usd": 0.03659,
+          "tarifa_por_peso": 0.19281523,
+          "tarifa_por_bulto": 3.77412419,
+          "coordenadas_llegada": [
+            -12.867386,
+            -72.6937147
+          ]
         },
         {
           "nombre": "Quiñones",
+          "costo_kg_ponderado": 0.378654,
           "km": 1093,
           "horas": 34,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 3,
+          "total_bultos": 33,
+          "flete_venta_usd": 0.156606,
           "tarifa_por_peso": 0.37865402,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 3,
-          "total_flete_usd": 129.83,
-          "total_peso_kg": 342.82,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -13.5333198,
+            -71.9433903
+          ]
         }
       ]
     },
     {
       "id": "huanuco",
       "nombre": "Huánuco",
+      "nombre_grafico": "HUN",
       "coordenadas": [
         -9.2995791,
         -76.0026247
       ],
-      "km_referencia": 484,
-      "horas_referencia": 20,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 950,
-      "total_flete_usd": 11043.12,
-      "total_peso_kg": 54321.12,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.200048,
           "km": 484,
           "horas": 20,
           "tipo_viaje": "Con Paradas",
@@ -773,34 +780,30 @@
               -75.9989
             ]
           ],
+          "total_pedidos": 950,
+          "total_bultos": 3220,
+          "flete_venta_usd": 0.031885,
           "tarifa_por_peso": 0.14839438,
           "tarifa_por_bulto": 3.76316738,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 950,
-          "total_flete_usd": 11043.12,
-          "total_peso_kg": 54321.12,
-          "comentarios": "Piloto en curso con agencia Dival",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -9.2995791,
+            -76.0026247
+          ]
         }
       ]
     },
     {
       "id": "ica",
       "nombre": "Ica",
+      "nombre_grafico": "ICA",
       "coordenadas": [
         -14.8330372,
         -74.9461967
       ],
-      "km_referencia": 518,
-      "horas_referencia": 14,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 3093,
-      "total_flete_usd": 39485.24,
-      "total_peso_kg": 159662.24,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.161811,
           "km": 518,
           "horas": 14,
           "tipo_viaje": "Con Paradas",
@@ -833,18 +836,19 @@
               -74.9462
             ]
           ],
+          "total_pedidos": 2983,
+          "total_bultos": 12817,
+          "flete_venta_usd": 0.022865,
           "tarifa_por_peso": 0.1216375,
           "tarifa_por_bulto": 3.7744988,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 2983,
-          "total_flete_usd": 38143.12,
-          "total_peso_kg": 154321.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -14.8330372,
+            -74.9461967
+          ]
         },
         {
           "nombre": "Marvisur",
+          "costo_kg_ponderado": 0.335123,
           "km": 546,
           "horas": 16,
           "tipo_viaje": "Con Paradas",
@@ -882,101 +886,95 @@
               -75.1
             ]
           ],
+          "total_pedidos": 110,
+          "total_bultos": 270,
+          "flete_venta_usd": 0.041812,
           "tarifa_por_peso": 0.21316442,
           "tarifa_por_bulto": 4.96326891,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 110,
-          "total_flete_usd": 1342.12,
-          "total_peso_kg": 5341.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -15.3624052,
+            -75.1656989
+          ]
         }
       ]
     },
     {
       "id": "junin___hyo",
       "nombre": "Junín - HYO",
+      "nombre_grafico": "J-HYO",
       "coordenadas": [
         -12.0758021,
         -75.2106902
       ],
-      "km_referencia": 340,
-      "horas_referencia": 9,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 2286,
-      "total_flete_usd": 40019.66,
-      "total_peso_kg": 107102.78,
       "agencias": [
         {
           "nombre": "Samka",
+          "costo_kg_ponderado": 0.184605,
           "km": 340,
           "horas": 9,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 2132,
+          "total_bultos": 9538,
+          "flete_venta_usd": 0.03514,
           "tarifa_por_peso": 0.15179789,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": 9.75674603,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 2132,
-          "total_flete_usd": 36767.82,
-          "total_peso_kg": 101453.22,
-          "comentarios": "Negociar reducción de tarifas / Iniciar pruebas con Dival y/o Antezana",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -12.0758021,
+            -75.2106902
+          ]
         },
         {
           "nombre": "Arellano",
+          "costo_kg_ponderado": 0.531762,
           "km": 340,
           "horas": 9,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 113,
+          "total_bultos": 381,
+          "flete_venta_usd": 0.064253,
           "tarifa_por_peso": 0.53176204,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 113,
-          "total_flete_usd": 2183.71,
-          "total_peso_kg": 4108.34,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -12.0758021,
+            -75.2106902
+          ]
         },
         {
           "nombre": "Andrea & Daniela",
+          "costo_kg_ponderado": 0.69302,
           "km": 340,
           "horas": 9,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 41,
+          "total_bultos": 135,
+          "flete_venta_usd": 0.095881,
           "tarifa_por_peso": 0.6930204,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 41,
-          "total_flete_usd": 1068.13,
-          "total_peso_kg": 1541.22,
-          "comentarios": "Revisar las urgencias de pedidos de volumen (carretillas)",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -12.0758021,
+            -75.2106902
+          ]
         }
       ]
     },
     {
       "id": "junin___sc",
       "nombre": "Junín - SC",
+      "nombre_grafico": "J-SC",
       "coordenadas": [
         -11.4297526,
         -74.5091881
       ],
-      "km_referencia": 533,
-      "horas_referencia": 28,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 1351,
-      "total_flete_usd": 24148.65,
-      "total_peso_kg": 88682.24,
       "agencias": [
         {
-          "nombre": "Arellano",
+          "nombre": "Andrea & Daniela",
+          "costo_kg_ponderado": 0.323358,
           "km": 533,
           "horas": 28,
           "tipo_viaje": "Con Paradas",
@@ -1009,18 +1007,19 @@
               -74.6344
             ]
           ],
+          "total_pedidos": 310,
+          "total_bultos": 1116,
+          "flete_venta_usd": 0.060036,
           "tarifa_por_peso": null,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": 1014.0,
-          "total_pedidos": 1041,
-          "total_flete_usd": 17738.54,
-          "total_peso_kg": 67341.12,
-          "comentarios": "Piloto con Dival se inicia lunes 22-Jun",
-          "modalidad_principal": "por_viaje"
+          "coordenadas_llegada": [
+            -11.4297526,
+            -74.5091881
+          ]
         },
         {
-          "nombre": "Andrea & Daniela",
+          "nombre": "Arellano",
+          "costo_kg_ponderado": 0.449249,
           "km": 533,
           "horas": 28,
           "tipo_viaje": "Con Paradas",
@@ -1053,34 +1052,30 @@
               -74.6344
             ]
           ],
+          "total_pedidos": 1041,
+          "total_bultos": 3388,
+          "flete_venta_usd": 0.062955,
           "tarifa_por_peso": null,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": 1014.0,
-          "total_pedidos": 310,
-          "total_flete_usd": 6410.11,
-          "total_peso_kg": 21341.12,
-          "comentarios": "Piloto con Dival se inicia lunes 22-Jun",
-          "modalidad_principal": "por_viaje"
+          "coordenadas_llegada": [
+            -11.4297526,
+            -74.5091881
+          ]
         }
       ]
     },
     {
       "id": "moquegua",
       "nombre": "Moquegua",
+      "nombre_grafico": "MOQ",
       "coordenadas": [
         -17.1932606,
         -70.9429771
       ],
-      "km_referencia": 1190,
-      "horas_referencia": 28,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 876,
-      "total_flete_usd": 9875.41,
-      "total_peso_kg": 42341.22,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.222405,
           "km": 1190,
           "horas": 28,
           "tipo_viaje": "Con Paradas",
@@ -1108,34 +1103,30 @@
               -71.338
             ]
           ],
+          "total_pedidos": 2076,
+          "total_bultos": 5962,
+          "flete_venta_usd": 0.039342,
           "tarifa_por_peso": 0.15169817,
           "tarifa_por_bulto": 3.76341236,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 876,
-          "total_flete_usd": 9875.41,
-          "total_peso_kg": 42341.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -17.1932606,
+            -70.9429771
+          ]
         }
       ]
     },
     {
       "id": "piura",
       "nombre": "Piura",
+      "nombre_grafico": "PIU",
       "coordenadas": [
         -5.090205,
         -81.1094215
       ],
-      "km_referencia": 1465,
-      "horas_referencia": 24,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 3176,
-      "total_flete_usd": 46574.53,
-      "total_peso_kg": 175682.24,
       "agencias": [
         {
           "nombre": "Aval",
+          "costo_kg_ponderado": 0.196972,
           "km": 1465,
           "horas": 24,
           "tipo_viaje": "Con Paradas",
@@ -1158,18 +1149,19 @@
               -80.6847
             ]
           ],
+          "total_pedidos": 957,
+          "total_bultos": 3732,
+          "flete_venta_usd": 0.028291,
           "tarifa_por_peso": 0.14387176,
           "tarifa_por_bulto": 3.73274871,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 957,
-          "total_flete_usd": 14031.41,
-          "total_peso_kg": 54341.12,
-          "comentarios": "Evaluar tarifas con Dival para efectuar piloto",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -4.9150183,
+            -80.7000129
+          ]
         },
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.220445,
           "km": 1465,
           "horas": 24,
           "tipo_viaje": "Con Paradas",
@@ -1192,34 +1184,30 @@
               -81.1147
             ]
           ],
+          "total_pedidos": 2219,
+          "total_bultos": 8617,
+          "flete_venta_usd": 0.030581,
           "tarifa_por_peso": 0.17645569,
           "tarifa_por_bulto": 3.78154467,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 2219,
-          "total_flete_usd": 32543.12,
-          "total_peso_kg": 121341.12,
-          "comentarios": "Evaluar tarifas con Dival para efectuar piloto",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -5.090205,
+            -81.1094215
+          ]
         }
       ]
     },
     {
       "id": "puno",
       "nombre": "Puno",
+      "nombre_grafico": "PUN",
       "coordenadas": [
         -15.4909422,
         -70.1422765
       ],
-      "km_referencia": 1450,
-      "horas_referencia": 48,
-      "tipo_viaje_referencia": "Directo",
-      "total_pedidos": 1517,
-      "total_flete_usd": 27980.34,
-      "total_peso_kg": 108308.88,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.205809,
           "km": 1450,
           "horas": 48,
           "tipo_viaje": "Con Paradas",
@@ -1252,85 +1240,84 @@
               -70.1333
             ]
           ],
+          "total_pedidos": 4632,
+          "total_bultos": 18093,
+          "flete_venta_usd": 0.037674,
           "tarifa_por_peso": 0.16530446,
           "tarifa_por_bulto": 3.75644318,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1243,
-          "total_flete_usd": 21345.02,
-          "total_peso_kg": 87341.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -15.4909422,
+            -70.1422765
+          ]
         },
         {
           "nombre": "Quiñones",
+          "costo_kg_ponderado": 0.284913,
           "km": 1450,
-          "horas": 48,
+          "horas": 38,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 2,
+          "total_bultos": 2,
+          "flete_venta_usd": 0.101555,
           "tarifa_por_peso": 0.28491337,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 53,
-          "total_flete_usd": 659.49,
-          "total_peso_kg": 2314.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -15.4909422,
+            -70.1422765
+          ]
         },
         {
           "nombre": "Joaquin Transport",
+          "costo_kg_ponderado": 0.30473,
           "km": 1450,
-          "horas": 48,
+          "horas": 38,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 16,
+          "total_bultos": 396,
+          "flete_venta_usd": 0.109128,
           "tarifa_por_peso": 0.30473031,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 134,
-          "total_flete_usd": 4088.31,
-          "total_peso_kg": 13412.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -15.4909422,
+            -70.1422765
+          ]
         },
         {
           "nombre": "Arellano",
+          "costo_kg_ponderado": 0.360074,
           "km": 1450,
-          "horas": 48,
+          "horas": 38,
           "tipo_viaje": "Directo",
           "paradas": [],
           "paradas_coords": [],
+          "total_pedidos": 67,
+          "total_bultos": 420,
+          "flete_venta_usd": 0.104661,
           "tarifa_por_peso": 0.36007352,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 87,
-          "total_flete_usd": 1887.52,
-          "total_peso_kg": 5241.22,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -15.4909422,
+            -70.1422765
+          ]
         }
       ]
     },
     {
       "id": "tacna",
       "nombre": "Tacna",
+      "nombre_grafico": "TAC",
       "coordenadas": [
         -18.0267319,
         -70.2541451
       ],
-      "km_referencia": 1340,
-      "horas_referencia": 28,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 2194,
-      "total_flete_usd": 26843.12,
-      "total_peso_kg": 94321.12,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.231485,
           "km": 1340,
           "horas": 28,
           "tipo_viaje": "Con Paradas",
@@ -1363,34 +1350,30 @@
               -70.2461
             ]
           ],
+          "total_pedidos": 2194,
+          "total_bultos": 6854,
+          "flete_venta_usd": 0.039582,
           "tarifa_por_peso": 0.15408803,
           "tarifa_por_bulto": 3.77523225,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 2194,
-          "total_flete_usd": 26843.12,
-          "total_peso_kg": 94321.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -18.0267319,
+            -70.2541451
+          ]
         }
       ]
     },
     {
       "id": "trujillo",
       "nombre": "Trujillo",
+      "nombre_grafico": "TRJ",
       "coordenadas": [
         -7.2293771,
         -79.4443823
       ],
-      "km_referencia": 847,
-      "horas_referencia": 16,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 5236,
-      "total_flete_usd": 90859.17,
-      "total_peso_kg": 354462.24,
       "agencias": [
         {
           "nombre": "Grael",
+          "costo_kg_ponderado": 0.113711,
           "km": 847,
           "horas": 16,
           "tipo_viaje": "Con Paradas",
@@ -1408,18 +1391,19 @@
               -79.0288
             ]
           ],
+          "total_pedidos": 1,
+          "total_bultos": 10,
+          "flete_venta_usd": 0.019197,
           "tarifa_por_peso": 0.11371073,
           "tarifa_por_bulto": null,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 1,
-          "total_flete_usd": 16.05,
-          "total_peso_kg": 141.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -8.1184656,
+            -79.0278222
+          ]
         },
         {
           "nombre": "Aval",
+          "costo_kg_ponderado": 0.173747,
           "km": 847,
           "horas": 16,
           "tipo_viaje": "Con Paradas",
@@ -1437,34 +1421,30 @@
               -79.4333
             ]
           ],
+          "total_pedidos": 5235,
+          "total_bultos": 23155,
+          "flete_venta_usd": 0.026563,
           "tarifa_por_peso": 0.12220888,
           "tarifa_por_bulto": 4.06351705,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 5235,
-          "total_flete_usd": 90843.12,
-          "total_peso_kg": 354321.12,
-          "comentarios": null,
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -7.2293771,
+            -79.4443823
+          ]
         }
       ]
     },
     {
       "id": "tumbes",
       "nombre": "Tumbes",
+      "nombre_grafico": "TUM",
       "coordenadas": [
         -3.503512,
         -80.2924999
       ],
-      "km_referencia": 1450,
-      "horas_referencia": 26,
-      "tipo_viaje_referencia": "Con Paradas",
-      "total_pedidos": 512,
-      "total_flete_usd": 7501.27,
-      "total_peso_kg": 25341.12,
       "agencias": [
         {
           "nombre": "Marvisur",
+          "costo_kg_ponderado": 0.380979,
           "km": 1450,
           "horas": 26,
           "tipo_viaje": "Con Paradas",
@@ -1487,15 +1467,15 @@
               -80.45
             ]
           ],
+          "total_pedidos": 512,
+          "total_bultos": 1559,
+          "flete_venta_usd": 0.066988,
           "tarifa_por_peso": 0.29587576,
           "tarifa_por_bulto": 6.31437026,
-          "tarifa_por_pedido": null,
-          "tarifa_por_viaje": null,
-          "total_pedidos": 512,
-          "total_flete_usd": 7501.27,
-          "total_peso_kg": 25341.12,
-          "comentarios": "Piloto en curso con agencia Dival",
-          "modalidad_principal": "por_peso"
+          "coordenadas_llegada": [
+            -3.503512,
+            -80.2924999
+          ]
         }
       ]
     }
