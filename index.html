@@ -276,9 +276,12 @@
 
   async function inicializar() {
     try {
-      const resp = await fetch('data.json');
+      const resp = await fetch(`data.json?v=${Date.now()}`, { cache: 'no-store' });
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       datos = await resp.json();
+      if (!datos?.destinos?.[0]?.nombre_grafico) {
+        throw new Error('data.json desactualizado. Ejecute: python procesar_datos.py');
+      }
     } catch (e) {
       mostrarErrorCarga(e.message);
       return;
@@ -359,14 +362,21 @@
       </div>`;
   }
 
+  function fmtNum(val) {
+    if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
+    return Number(val).toLocaleString();
+  }
+
   function poblarSelectorDestinos() {
     const sel = document.getElementById('select-destino');
     sel.innerHTML = '<option value="">— Selecciona un destino —</option>';
     datos.destinos.forEach(dest => {
       const opt = document.createElement('option');
       opt.value = dest.id;
-      const mejor = dest.agencias[0];
-      opt.textContent = `${dest.nombre} (${dest.nombre_grafico}) · ${mejor.km} KM`;
+      const mejor = dest.agencias?.[0];
+      const codigo = dest.nombre_grafico || dest.nombre.substring(0, 3).toUpperCase();
+      const km = mejor?.km ?? '—';
+      opt.textContent = `${dest.nombre} (${codigo}) · ${km} KM`;
       sel.appendChild(opt);
     });
   }
@@ -393,16 +403,17 @@
     }
     idActivoAntes = id;
 
+    document.getElementById('panel-bienvenida').classList.add('hidden');
+    const panelDetalle = document.getElementById('panel-detalle');
+    panelDetalle.classList.remove('hidden');
+    panelDetalle.classList.add('fade-in');
+
+    if (!destinoActual.agencias?.length) return;
     agenciaActual = destinoActual.agencias[0];
 
     poblarSelectorAgencias(agenciaActual.nombre);
     actualizarPanel();
     dibujarRuta();
-
-    document.getElementById('panel-bienvenida').classList.add('hidden');
-    const panelDetalle = document.getElementById('panel-detalle');
-    panelDetalle.classList.remove('hidden');
-    panelDetalle.classList.add('fade-in');
   }
 
   function poblarSelectorAgencias(nombreSeleccionado) {
@@ -411,8 +422,8 @@
     destinoActual.agencias.forEach(ag => {
       const opt = document.createElement('option');
       opt.value = ag.nombre;
-      const costo = ag.costo_kg_ponderado !== null
-        ? ` · $${ag.costo_kg_ponderado.toFixed(4)}/KG`
+      const costo = ag.costo_kg_ponderado != null
+        ? ` · $${Number(ag.costo_kg_ponderado).toFixed(4)}/KG`
         : '';
       opt.textContent = `${ag.nombre}${costo}`;
       if (ag.nombre === nombreSeleccionado) opt.selected = true;
@@ -439,8 +450,9 @@
   }
 
   function actualizarPanel() {
-    document.getElementById('kpi-km').textContent = agenciaActual.km.toLocaleString();
-    document.getElementById('kpi-horas').textContent = agenciaActual.horas;
+    if (!agenciaActual) return;
+    document.getElementById('kpi-km').textContent = fmtNum(agenciaActual.km);
+    document.getElementById('kpi-horas').textContent = fmtNum(agenciaActual.horas);
 
     const badgeTipo = document.getElementById('kpi-tipo-viaje');
     badgeTipo.textContent = agenciaActual.tipo_viaje;
@@ -463,9 +475,9 @@
     }
 
     document.getElementById('stat-pedidos').textContent =
-      agenciaActual.total_pedidos.toLocaleString();
+      fmtNum(agenciaActual.total_pedidos);
     document.getElementById('stat-bultos').textContent =
-      agenciaActual.total_bultos.toLocaleString();
+      fmtNum(agenciaActual.total_bultos);
     document.getElementById('stat-flete-venta').textContent =
       fmtRatio(agenciaActual.flete_venta_usd);
 
@@ -517,7 +529,7 @@
       icon: L.divIcon({ className:'', html:'<div class="marcador-lima"></div>', iconSize:[18,18], iconAnchor:[9,9] })
     }).addTo(capaParadas).bindTooltip('Lima (Origen)', { direction:'top', offset:[0,-4] });
 
-    agenciaActual.paradas.forEach((nombre, i) => {
+    (agenciaActual.paradas || []).forEach((nombre, i) => {
       const coord = paradasC[i];
       if (!coord) return;
       L.marker(coord, {
