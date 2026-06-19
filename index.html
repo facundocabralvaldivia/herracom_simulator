@@ -91,6 +91,12 @@
       padding-right: 32px !important;
     }
 
+    #select-agencia-btn { padding-right: 32px !important; }
+    #select-agencia-menu { max-height: 11rem; }
+    .opcion-agencia { cursor: pointer; }
+    .opcion-agencia:hover { background: #eff6ff; }
+    .opcion-agencia.activa { background: #dbeafe; }
+
     .badge-directo { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
     .badge-paradas { background:#fef3c7; color:#b45309; border:1px solid #fcd34d; }
 
@@ -178,10 +184,16 @@
           <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
             <i class="fa-solid fa-building text-blue-600 mr-1"></i>Agencia de Transporte
           </label>
-          <select id="select-agencia"
-            class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
-            onchange="onCambioAgencia()">
-          </select>
+          <div id="select-agencia-wrap" class="relative">
+            <button type="button" id="select-agencia-btn"
+              class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer text-left"
+              onclick="toggleMenuAgencia()">
+              <span id="select-agencia-label">—</span>
+            </button>
+            <div id="select-agencia-menu"
+              class="hidden absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg overflow-y-auto text-sm text-slate-700">
+            </div>
+          </div>
         </div>
 
         <div class="flex-none grid grid-cols-3 gap-2.5">
@@ -240,7 +252,7 @@
 
         <div id="bloque-tarifas" class="flex-1 bg-white rounded-xl border border-slate-200 shadow panel-card flex flex-col min-h-0">
           <div class="panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
-            <i class="fa-solid fa-tags text-blue-600 mr-1"></i>Tarifas de Referencia
+            <i class="fa-solid fa-tags text-blue-600 mr-1"></i>Tarifas de Referencia ($ USD)
           </div>
           <div class="grid grid-cols-4 gap-2 flex-1">
             <div class="text-center bg-violet-50 rounded-xl tarifa-box border border-violet-100">
@@ -277,6 +289,34 @@
   let idActivoAntes = null;
 
   document.addEventListener('DOMContentLoaded', inicializar);
+  document.addEventListener('click', (e) => {
+    const wrap = document.getElementById('select-agencia-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      document.getElementById('select-agencia-menu')?.classList.add('hidden');
+    }
+  });
+
+  function htmlOpcionAgencia(ag) {
+    if (ag.costo_kg_ponderado == null) return ag.nombre;
+    const metrica = `$${Number(ag.costo_kg_ponderado).toFixed(2)} USD / KG Ponderado`;
+    return `${ag.nombre} · <strong>${metrica}</strong>`;
+  }
+
+  function toggleMenuAgencia() {
+    document.getElementById('select-agencia-menu').classList.toggle('hidden');
+  }
+
+  function seleccionarAgencia(nombre) {
+    agenciaActual = destinoActual.agencias.find(a => a.nombre === nombre);
+    if (!agenciaActual) return;
+    document.getElementById('select-agencia-label').innerHTML = htmlOpcionAgencia(agenciaActual);
+    document.getElementById('select-agencia-menu').classList.add('hidden');
+    document.querySelectorAll('.opcion-agencia').forEach(el => {
+      el.classList.toggle('activa', el.dataset.nombre === nombre);
+    });
+    actualizarPanel();
+    dibujarRuta();
+  }
 
   async function inicializar() {
     try {
@@ -421,26 +461,20 @@
   }
 
   function poblarSelectorAgencias(nombreSeleccionado) {
-    const sel = document.getElementById('select-agencia');
-    sel.innerHTML = '';
+    const menu = document.getElementById('select-agencia-menu');
+    menu.innerHTML = '';
     destinoActual.agencias.forEach(ag => {
-      const opt = document.createElement('option');
-      opt.value = ag.nombre;
-      const costo = ag.costo_kg_ponderado != null
-        ? ` · $${Number(ag.costo_kg_ponderado).toFixed(2)} USD /KG`
-        : '';
-      opt.textContent = `${ag.nombre}${costo}`;
-      if (ag.nombre === nombreSeleccionado) opt.selected = true;
-      sel.appendChild(opt);
+      const item = document.createElement('div');
+      item.className = 'opcion-agencia px-3 py-2 border-b border-slate-100 last:border-b-0';
+      item.dataset.nombre = ag.nombre;
+      item.innerHTML = htmlOpcionAgencia(ag);
+      if (ag.nombre === nombreSeleccionado) item.classList.add('activa');
+      item.addEventListener('click', () => seleccionarAgencia(ag.nombre));
+      menu.appendChild(item);
     });
-  }
-
-  function onCambioAgencia() {
-    const nombre = document.getElementById('select-agencia').value;
-    agenciaActual = destinoActual.agencias.find(a => a.nombre === nombre);
-    if (!agenciaActual) return;
-    actualizarPanel();
-    dibujarRuta();
+    const seleccionada = destinoActual.agencias.find(a => a.nombre === nombreSeleccionado)
+      || destinoActual.agencias[0];
+    document.getElementById('select-agencia-label').innerHTML = htmlOpcionAgencia(seleccionada);
   }
 
   function fmtRatio(val) {
