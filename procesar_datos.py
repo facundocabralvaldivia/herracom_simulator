@@ -131,6 +131,8 @@ def procesar_a_json(df: pd.DataFrame) -> dict:
     col_km = [c for c in df.columns if c.startswith("KM")][0]
     col_horas = [c for c in df.columns if "Horas" in c][0]
     col_tarifa_bulto = [c for c in df.columns if "Tarifa Por Bulto" in c][0]
+    col_tarifa_pedido = [c for c in df.columns if "Tarifa Por Pedido" in c][0]
+    col_tarifa_viaje = [c for c in df.columns if "Tarifa Por Viaje" in c][0]
 
     output = {
         "meta": {
@@ -163,7 +165,7 @@ def procesar_a_json(df: pd.DataFrame) -> dict:
             agencias.append(
                 {
                     "nombre": row["Agencia"],
-                    "costo_kg_ponderado": _num(row["Costo por Kilo Ponderado USD"], 6),
+                    "costo_kg_ponderado": _num(row["Costo por Kilo Ponderado USD"], 2),
                     "km": _int(row[col_km]),
                     "horas": _int(row[col_horas]),
                     "tipo_viaje": tipo_viaje,
@@ -171,9 +173,11 @@ def procesar_a_json(df: pd.DataFrame) -> dict:
                     "paradas_coords": coords_paradas,
                     "total_pedidos": _int(row["Total Pedidos"]),
                     "total_bultos": _int(row["Total Bultos"]),
-                    "flete_venta_usd": _num(row["Flete /Venta ($ USD)"], 6),
-                    "tarifa_por_peso": _num(row["Tarifa /Por Peso"]),
-                    "tarifa_por_bulto": _num(row[col_tarifa_bulto]),
+                    "flete_venta_usd": _num(row["Flete /Venta ($ USD)"], 2),
+                    "tarifa_por_peso": _num(row["Tarifa /Por Peso"], 2),
+                    "tarifa_por_bulto": _num(row[col_tarifa_bulto], 2),
+                    "tarifa_por_pedido": _num(row[col_tarifa_pedido], 2),
+                    "tarifa_por_viaje": _num(row[col_tarifa_viaje], 2),
                     "coordenadas_llegada": coord_str_to_list(
                         row["Coordenadas Punto de Llegada"]
                     ),

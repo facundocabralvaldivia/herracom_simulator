@@ -99,7 +99,7 @@
     .kpi-value { font-size: 1.75rem; line-height: 1.2; }
     .kpi-label { font-size: 0.8rem; }
     .stat-value { font-size: 1.375rem; line-height: 1.2; }
-    .tarifa-value { font-size: 1rem; line-height: 1.3; }
+    .tarifa-value { font-size: 0.875rem; line-height: 1.3; }
     .stat-box, .tarifa-box { padding: 1rem 0.75rem; min-height: 5.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .kpi-card-inner { padding: 1.25rem 0.75rem; min-height: 7rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
   </style>
@@ -242,11 +242,7 @@
           <div class="panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
             <i class="fa-solid fa-tags text-blue-600 mr-1"></i>Tarifas de Referencia
           </div>
-          <div class="grid grid-cols-3 gap-2.5 flex-1">
-            <div class="text-center bg-blue-50 rounded-xl tarifa-box border border-blue-100">
-              <div id="tarifa-costo-kg" class="tarifa-value font-bold text-blue-800">—</div>
-              <div class="kpi-label text-blue-600 mt-1.5">Costo/KG Ponderado</div>
-            </div>
+          <div class="grid grid-cols-4 gap-2 flex-1">
             <div class="text-center bg-violet-50 rounded-xl tarifa-box border border-violet-100">
               <div id="tarifa-peso" class="tarifa-value font-bold text-violet-800">—</div>
               <div class="kpi-label text-violet-600 mt-1.5">Tarifa por Peso</div>
@@ -254,6 +250,14 @@
             <div class="text-center bg-emerald-50 rounded-xl tarifa-box border border-emerald-100">
               <div id="tarifa-bulto" class="tarifa-value font-bold text-emerald-800">—</div>
               <div class="kpi-label text-emerald-600 mt-1.5">Tarifa por Bulto</div>
+            </div>
+            <div class="text-center bg-amber-50 rounded-xl tarifa-box border border-amber-100">
+              <div id="tarifa-pedido" class="tarifa-value font-bold text-amber-800">—</div>
+              <div class="kpi-label text-amber-600 mt-1.5">Tarifa por Pedido</div>
+            </div>
+            <div class="text-center bg-blue-50 rounded-xl tarifa-box border border-blue-100">
+              <div id="tarifa-viaje" class="tarifa-value font-bold text-blue-800">—</div>
+              <div class="kpi-label text-blue-600 mt-1.5">Tarifa por Viaje</div>
             </div>
           </div>
         </div>
@@ -423,7 +427,7 @@
       const opt = document.createElement('option');
       opt.value = ag.nombre;
       const costo = ag.costo_kg_ponderado != null
-        ? ` · $${Number(ag.costo_kg_ponderado).toFixed(4)}/KG`
+        ? ` · $${Number(ag.costo_kg_ponderado).toFixed(2)} USD /KG`
         : '';
       opt.textContent = `${ag.nombre}${costo}`;
       if (ag.nombre === nombreSeleccionado) opt.selected = true;
@@ -444,9 +448,9 @@
     return (val * 100).toFixed(2) + '%';
   }
 
-  function fmtTarifa(val, suffix) {
+  function fmtTarifa(val, unidad) {
     if (val === null || val === undefined) return '—';
-    return `$${val.toFixed(4)}${suffix}`;
+    return `$${val.toFixed(2)} USD ${unidad}`;
   }
 
   function actualizarPanel() {
@@ -481,12 +485,14 @@
     document.getElementById('stat-flete-venta').textContent =
       fmtRatio(agenciaActual.flete_venta_usd);
 
-    document.getElementById('tarifa-costo-kg').textContent =
-      fmtTarifa(agenciaActual.costo_kg_ponderado, '/KG');
     document.getElementById('tarifa-peso').textContent =
       fmtTarifa(agenciaActual.tarifa_por_peso, '/KG');
     document.getElementById('tarifa-bulto').textContent =
-      fmtTarifa(agenciaActual.tarifa_por_bulto, '/bulto');
+      fmtTarifa(agenciaActual.tarifa_por_bulto, '/ Bulto');
+    document.getElementById('tarifa-pedido').textContent =
+      fmtTarifa(agenciaActual.tarifa_por_pedido, '/Pedido');
+    document.getElementById('tarifa-viaje').textContent =
+      fmtTarifa(agenciaActual.tarifa_por_viaje, '/Viaje');
   }
 
   async function dibujarRuta() {
@@ -494,7 +500,7 @@
     capaParadas.clearLayers();
 
     const lima = datos.partida.coordenadas;
-    const destCoord = agenciaActual.coordenadas_llegada || destinoActual.coordenadas;
+    const destCoord = destinoActual.coordenadas;
     const paradasC = agenciaActual.paradas_coords || [];
     const waypoints = [lima, ...paradasC, destCoord];
     const coordsOSRM = waypoints.map(c => `${c[1]},${c[0]}`).join(';');
@@ -537,19 +543,6 @@
       }).addTo(capaParadas)
         .bindTooltip(`Parada ${i+1}: ${nombre}`, { direction:'top', offset:[0,-4] });
     });
-
-    L.marker(destCoord, {
-      icon: L.divIcon({
-        className: '',
-        html: `<div style="width:22px;height:22px;background:#dc2626;border:3px solid #fff;border-radius:50%;
-                           box-shadow:0 2px 8px rgba(220,38,38,.5);display:flex;align-items:center;
-                           justify-content:center;">
-                 <div style="width:6px;height:6px;background:#fff;border-radius:50%;"></div>
-               </div>`,
-        iconSize: [22, 22], iconAnchor: [11, 11],
-      })
-    }).addTo(capaParadas)
-      .bindTooltip(`${destinoActual.nombre} (${destinoActual.nombre_grafico})`, { direction:'top', offset:[0,-6] });
   }
   </script>
 </body>
