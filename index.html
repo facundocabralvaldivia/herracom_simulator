@@ -298,7 +298,7 @@
 
   function htmlOpcionAgencia(ag) {
     if (ag.costo_kg_ponderado == null) return ag.nombre;
-    const metrica = `$${Number(ag.costo_kg_ponderado).toFixed(2)} USD / KG Ponderado`;
+    const metrica = `$ ${Number(ag.costo_kg_ponderado).toFixed(2)}USD/ KG Ponderado`;
     return `${ag.nombre} · <strong>${metrica}</strong>`;
   }
 
@@ -484,7 +484,7 @@
 
   function fmtTarifa(val, unidad) {
     if (val === null || val === undefined) return '—';
-    return `$${val.toFixed(2)} USD ${unidad}`;
+    return `$ ${val.toFixed(2)}USD${unidad}`;
   }
 
   function actualizarPanel() {
@@ -522,7 +522,7 @@
     document.getElementById('tarifa-peso').textContent =
       fmtTarifa(agenciaActual.tarifa_por_peso, '/KG');
     document.getElementById('tarifa-bulto').textContent =
-      fmtTarifa(agenciaActual.tarifa_por_bulto, '/ Bulto');
+      fmtTarifa(agenciaActual.tarifa_por_bulto, '/Bulto');
     document.getElementById('tarifa-pedido').textContent =
       fmtTarifa(agenciaActual.tarifa_por_pedido, '/Pedido');
     document.getElementById('tarifa-viaje').textContent =
