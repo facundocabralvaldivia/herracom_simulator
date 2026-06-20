@@ -15,7 +15,18 @@
       theme: {
         extend: {
           colors: {
-            brand: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 900:'#1e3a8a' },
+            brand: {
+              50:  '#FFF4ED',
+              100: '#FFE8DB',
+              200: '#FFD0B8',
+              300: '#FFB088',
+              400: '#FF8844',
+              500: '#FF6720',
+              600: '#E55612',
+              700: '#C4470E',
+              800: '#9D390B',
+              900: '#752B08',
+            },
           }
         }
       }
@@ -54,10 +65,10 @@
 
     .marcador-dest {
       width: 36px; height: 36px;
-      background: #2563eb;
+      background: #E55612;
       border: 3px solid #fff;
       border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(37,99,235,.45);
+      box-shadow: 0 2px 8px rgba(255,103,32,.4);
       display: flex; align-items: center; justify-content: center;
       color: #fff; font-size: 9px; font-weight: 700;
       cursor: pointer;
@@ -65,7 +76,7 @@
       letter-spacing: -0.02em;
     }
     .marcador-dest:hover { transform: scale(1.12); }
-    .marcador-dest.activo { background: #dc2626; border-color: #fca5a5; box-shadow: 0 0 0 4px rgba(220,38,38,.25); }
+    .marcador-dest.activo { background: #FF6720; border-color: #FFD0B8; box-shadow: 0 0 0 4px rgba(255,103,32,.35); }
     .marcador-lima {
       width: 18px; height: 18px;
       background: #16a34a;
@@ -75,10 +86,10 @@
     }
     .marcador-parada {
       width: 14px; height: 14px;
-      background: #f59e0b;
+      background: #FF8844;
       border: 2px solid #fff;
       border-radius: 50%;
-      box-shadow: 0 1px 4px rgba(0,0,0,.3);
+      box-shadow: 0 1px 4px rgba(255,103,32,.35);
     }
 
     .kpi-card { transition: box-shadow .2s; }
@@ -94,11 +105,11 @@
     #select-agencia-btn { padding-right: 32px !important; }
     #select-agencia-menu { max-height: 11rem; }
     .opcion-agencia { cursor: pointer; }
-    .opcion-agencia:hover { background: #eff6ff; }
-    .opcion-agencia.activa { background: #dbeafe; }
+    .opcion-agencia:hover { background: #FFF4ED; }
+    .opcion-agencia.activa { background: #FFE8DB; }
 
     .badge-directo { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
-    .badge-paradas { background:#fef3c7; color:#b45309; border:1px solid #fcd34d; }
+    .badge-paradas { background:#FFF4ED; color:#C4470E; border:1px solid #FFD0B8; }
 
     .panel-card { padding: 1rem 1.125rem; }
     .panel-card-title { font-size: 0.8rem; margin-bottom: 0.625rem; }
@@ -113,18 +124,18 @@
 
 <body class="bg-slate-100 flex flex-col h-screen overflow-hidden">
 
-  <header class="flex-none bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 text-white px-5 py-2.5 flex items-center justify-between shadow-lg" style="height:52px">
+  <header class="flex-none text-white px-5 py-2.5 flex items-center justify-between shadow-lg" style="height:52px; background:#FF6720">
     <div class="flex items-center gap-3">
       <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
         <i class="fa-solid fa-truck-fast text-white"></i>
       </div>
       <div>
         <h1 class="font-bold text-sm leading-tight tracking-wide">Dashboard Logístico Perú</h1>
-        <p class="text-blue-200 text-[10px]">Análisis de Flete Por Provincia · MetPerú · Ene–May 2026</p>
+        <p class="text-white/80 text-[10px]">Análisis de Flete Por Provincia · MetPerú · Ene–May 2026</p>
       </div>
     </div>
     <div class="flex items-center gap-3 text-sm">
-      <div id="estado-osrm" class="hidden flex items-center gap-1.5 text-blue-200 text-[10px]">
+      <div id="estado-osrm" class="hidden flex items-center gap-1.5 text-white/80 text-[10px]">
         <span class="pulse w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span>
         <span>OSRM conectado</span>
       </div>
@@ -141,16 +152,16 @@
         <div id="mapa"></div>
 
         <div id="mapa-cargando" class="hidden absolute inset-0 bg-white/70 flex flex-col items-center justify-center z-50 rounded-xl">
-          <div class="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-2"></div>
-          <p class="text-blue-700 text-xs font-medium">Trazando ruta real (OSRM)…</p>
+          <div class="w-8 h-8 border-4 border-brand-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+          <p class="text-brand-700 text-xs font-medium">Trazando ruta real (OSRM)…</p>
         </div>
 
         <div class="absolute bottom-3 left-3 z-10 bg-white/95 backdrop-blur rounded-lg px-2.5 py-1.5 shadow text-[10px] text-gray-600 space-y-0.5 border border-gray-100">
           <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-green-600 rounded-full inline-block border border-white"></span> Lima (Origen)</div>
-          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-blue-600 rounded-full inline-block border border-white"></span> Destino disponible</div>
-          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-red-600 rounded-full inline-block border border-white"></span> Destino seleccionado</div>
-          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-amber-400 rounded-full inline-block border border-white"></span> Parada intermedia</div>
-          <div class="flex items-center gap-1.5"><span class="w-5 h-0.5 bg-blue-600 inline-block rounded"></span> Ruta real (OSRM)</div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full inline-block border border-white" style="background:#E55612"></span> Destino disponible</div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full inline-block border border-white" style="background:#FF6720"></span> Destino seleccionado</div>
+          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full inline-block border border-white" style="background:#FF8844"></span> Parada intermedia</div>
+          <div class="flex items-center gap-1.5"><span class="w-5 h-0.5 inline-block rounded" style="background:#FF6720"></span> Ruta real (OSRM)</div>
         </div>
 
       </div>
@@ -160,18 +171,18 @@
 
       <div class="flex-none bg-white rounded-xl shadow border border-slate-200 panel-card">
         <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
-          <i class="fa-solid fa-location-dot text-blue-600 mr-1"></i>Destino
+          <i class="fa-solid fa-location-dot text-brand-600 mr-1"></i>Destino
         </label>
         <select id="select-destino"
-          class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer"
+          class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
           onchange="onCambioDestino()">
           <option value="">— Selecciona un destino —</option>
         </select>
       </div>
 
-      <div id="panel-bienvenida" class="flex-1 bg-gradient-to-br from-blue-50 to-slate-50 rounded-xl border border-blue-100 panel-card flex flex-col items-center justify-center text-center min-h-0">
-        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-          <i class="fa-solid fa-route text-blue-600 text-xl"></i>
+      <div id="panel-bienvenida" class="flex-1 bg-gradient-to-br from-brand-50 to-slate-50 rounded-xl border border-brand-100 panel-card flex flex-col items-center justify-center text-center min-h-0">
+        <div class="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center mb-2">
+          <i class="fa-solid fa-route text-brand-600 text-xl"></i>
         </div>
         <h2 class="font-bold text-slate-700 text-sm mb-1">Selecciona un destino</h2>
         <p class="text-slate-500 text-xs max-w-xs">Haz clic en un marcador del mapa o usa el selector para visualizar la ruta y métricas de flete.</p>
@@ -182,11 +193,11 @@
 
         <div class="flex-none bg-white rounded-xl shadow border border-slate-200 panel-card">
           <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
-            <i class="fa-solid fa-building text-blue-600 mr-1"></i>Agencia de Transporte
+            <i class="fa-solid fa-building text-brand-600 mr-1"></i>Agencia de Transporte
           </label>
           <div id="select-agencia-wrap" class="relative">
             <button type="button" id="select-agencia-btn"
-              class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white cursor-pointer text-left"
+              class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer text-left"
               onclick="toggleMenuAgencia()">
               <span id="select-agencia-label">—</span>
             </button>
@@ -198,41 +209,41 @@
 
         <div class="flex-none grid grid-cols-3 gap-2.5">
           <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow text-center kpi-card-inner">
-            <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <i class="fa-solid fa-road text-blue-600 text-sm"></i>
+            <div class="w-9 h-9 bg-brand-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+              <i class="fa-solid fa-road text-brand-600 text-sm"></i>
             </div>
-            <div id="kpi-km" class="kpi-value font-bold text-blue-700">—</div>
+            <div id="kpi-km" class="kpi-value font-bold text-brand-700">—</div>
             <div class="kpi-label text-slate-500 font-medium mt-1">Kilometraje</div>
           </div>
           <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow text-center kpi-card-inner">
-            <div class="w-9 h-9 bg-violet-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <i class="fa-solid fa-clock text-violet-600 text-sm"></i>
+            <div class="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center mx-auto mb-2 border border-brand-100">
+              <i class="fa-solid fa-clock text-brand-500 text-sm"></i>
             </div>
-            <div id="kpi-horas" class="kpi-value font-bold text-violet-700">—</div>
+            <div id="kpi-horas" class="kpi-value font-bold text-brand-600">—</div>
             <div class="kpi-label text-slate-500 font-medium mt-1">Horas tránsito</div>
           </div>
           <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow text-center kpi-card-inner">
-            <div class="w-9 h-9 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-              <i class="fa-solid fa-map-location-dot text-emerald-600 text-sm"></i>
+            <div class="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center mx-auto mb-2 border border-brand-100">
+              <i class="fa-solid fa-map-location-dot text-brand-600 text-sm"></i>
             </div>
             <div id="kpi-tipo-viaje" class="text-xs font-bold px-2 py-1 rounded-full inline-block badge-directo">—</div>
             <div class="kpi-label text-slate-500 font-medium mt-1.5">Tipo de viaje</div>
           </div>
         </div>
 
-        <div id="bloque-paradas" class="hidden flex-none bg-amber-50 rounded-xl border border-amber-200 px-4 py-3">
+        <div id="bloque-paradas" class="hidden flex-none bg-brand-50 rounded-xl border border-brand-200 px-4 py-3">
           <div class="flex items-start gap-2">
-            <i class="fa-solid fa-circle-nodes text-amber-500 mt-0.5 text-sm"></i>
+            <i class="fa-solid fa-circle-nodes text-brand-500 mt-0.5 text-sm"></i>
             <div class="min-w-0">
-              <div class="text-sm font-semibold text-amber-700 mb-1">Paradas Intermedias</div>
-              <div id="kpi-paradas" class="text-sm text-amber-800 leading-5"></div>
+              <div class="text-sm font-semibold text-brand-700 mb-1">Paradas Intermedias</div>
+              <div id="kpi-paradas" class="text-sm text-brand-800 leading-5"></div>
             </div>
           </div>
         </div>
 
         <div class="flex-1 bg-white rounded-xl border border-slate-200 shadow panel-card flex flex-col min-h-0">
           <div class="panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
-            <i class="fa-solid fa-chart-bar text-blue-600 mr-1"></i>Historial Acumulado (Ene–May 2026)
+            <i class="fa-solid fa-chart-bar text-brand-600 mr-1"></i>Historial Acumulado (Ene–May 2026)
           </div>
           <div class="grid grid-cols-3 gap-2.5 flex-1">
             <div class="text-center bg-slate-50 rounded-xl stat-box border border-slate-100">
@@ -244,7 +255,7 @@
               <div class="kpi-label text-slate-500 mt-1.5">Total Bultos</div>
             </div>
             <div class="text-center bg-slate-50 rounded-xl stat-box border border-slate-100">
-              <div id="stat-flete-venta" class="stat-value font-bold text-blue-700">—</div>
+              <div id="stat-flete-venta" class="stat-value font-bold text-brand-700">—</div>
               <div class="kpi-label text-slate-500 mt-1.5">Flete/Venta USD</div>
             </div>
           </div>
@@ -252,24 +263,24 @@
 
         <div id="bloque-tarifas" class="flex-1 bg-white rounded-xl border border-slate-200 shadow panel-card flex flex-col min-h-0">
           <div class="panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
-            <i class="fa-solid fa-tags text-blue-600 mr-1"></i>Tarifas de Referencia ($ USD)
+            <i class="fa-solid fa-tags text-brand-600 mr-1"></i>Tarifas de Referencia ($ USD)
           </div>
           <div class="grid grid-cols-4 gap-2 flex-1">
-            <div class="text-center bg-violet-50 rounded-xl tarifa-box border border-violet-100">
-              <div id="tarifa-peso" class="tarifa-value font-bold text-violet-800">—</div>
-              <div class="kpi-label text-violet-600 mt-1.5">Tarifa por Peso</div>
+            <div class="text-center bg-brand-50 rounded-xl tarifa-box border border-brand-100">
+              <div id="tarifa-peso" class="tarifa-value font-bold text-brand-800">—</div>
+              <div class="kpi-label text-brand-600 mt-1.5">Tarifa por Peso</div>
             </div>
-            <div class="text-center bg-emerald-50 rounded-xl tarifa-box border border-emerald-100">
-              <div id="tarifa-bulto" class="tarifa-value font-bold text-emerald-800">—</div>
-              <div class="kpi-label text-emerald-600 mt-1.5">Tarifa por Bulto</div>
+            <div class="text-center bg-brand-50/70 rounded-xl tarifa-box border border-brand-100">
+              <div id="tarifa-bulto" class="tarifa-value font-bold text-brand-700">—</div>
+              <div class="kpi-label text-brand-600 mt-1.5">Tarifa por Bulto</div>
             </div>
-            <div class="text-center bg-amber-50 rounded-xl tarifa-box border border-amber-100">
-              <div id="tarifa-pedido" class="tarifa-value font-bold text-amber-800">—</div>
-              <div class="kpi-label text-amber-600 mt-1.5">Tarifa por Pedido</div>
+            <div class="text-center bg-brand-100/50 rounded-xl tarifa-box border border-brand-200">
+              <div id="tarifa-pedido" class="tarifa-value font-bold text-brand-800">—</div>
+              <div class="kpi-label text-brand-700 mt-1.5">Tarifa por Pedido</div>
             </div>
-            <div class="text-center bg-blue-50 rounded-xl tarifa-box border border-blue-100">
-              <div id="tarifa-viaje" class="tarifa-value font-bold text-blue-800">—</div>
-              <div class="kpi-label text-blue-600 mt-1.5">Tarifa por Viaje</div>
+            <div class="text-center bg-brand-100 rounded-xl tarifa-box border border-brand-200">
+              <div id="tarifa-viaje" class="tarifa-value font-bold text-brand-900">—</div>
+              <div class="kpi-label text-brand-700 mt-1.5">Tarifa por Viaje</div>
             </div>
           </div>
         </div>
@@ -392,16 +403,16 @@
     const totalDest = datos.destinos.length;
     const cont = document.getElementById('resumen-global');
     cont.innerHTML = `
-      <div class="bg-white rounded-lg p-2 border border-blue-100 shadow-sm">
-        <div class="text-lg font-bold text-blue-700">${totalDest}</div>
+      <div class="bg-white rounded-lg p-2 border border-brand-100 shadow-sm">
+        <div class="text-lg font-bold text-brand-700">${totalDest}</div>
         <div class="text-[10px] text-slate-500">Destinos</div>
       </div>
-      <div class="bg-white rounded-lg p-2 border border-blue-100 shadow-sm">
-        <div class="text-lg font-bold text-blue-700">${totalPedidos.toLocaleString()}</div>
+      <div class="bg-white rounded-lg p-2 border border-brand-100 shadow-sm">
+        <div class="text-lg font-bold text-brand-700">${totalPedidos.toLocaleString()}</div>
         <div class="text-[10px] text-slate-500">Pedidos</div>
       </div>
-      <div class="bg-white rounded-lg p-2 border border-blue-100 shadow-sm">
-        <div class="text-lg font-bold text-blue-700">${datos.destinos.reduce((s,d)=>s+d.agencias.length,0)}</div>
+      <div class="bg-white rounded-lg p-2 border border-brand-100 shadow-sm">
+        <div class="text-lg font-bold text-brand-700">${datos.destinos.reduce((s,d)=>s+d.agencias.length,0)}</div>
         <div class="text-[10px] text-slate-500">Rutas</div>
       </div>`;
   }
@@ -503,10 +514,10 @@
       document.getElementById('kpi-paradas').innerHTML =
         agenciaActual.paradas.map((p, i) =>
           `<span class="inline-flex items-center gap-1">
-             <span class="w-5 h-5 bg-amber-400 text-white rounded-full inline-flex items-center justify-center text-xs font-bold">${i+1}</span>
+             <span class="w-5 h-5 text-white rounded-full inline-flex items-center justify-center text-xs font-bold" style="background:#FF6720">${i+1}</span>
              <span>${p}</span>
            </span>`
-        ).join(' <i class="fa-solid fa-chevron-right text-amber-300 text-xs mx-0.5"></i> ');
+        ).join(' <i class="fa-solid fa-chevron-right text-brand-300 text-xs mx-0.5"></i> ');
       bloqParadas.classList.remove('hidden');
     } else {
       bloqParadas.classList.add('hidden');
@@ -549,7 +560,7 @@
       if (json.code === 'Ok' && json.routes.length > 0) {
         const coordsLeaflet = json.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
         capaRuta = L.polyline(coordsLeaflet, {
-          color: '#2563EB', weight: 5, opacity: 0.85, smoothFactor: 1,
+          color: '#FF6720', weight: 5, opacity: 0.85, smoothFactor: 1,
         }).addTo(mapa);
         mapa.fitBounds(capaRuta.getBounds(), { padding: [40, 40] });
         document.getElementById('estado-osrm').classList.remove('hidden');
@@ -558,7 +569,7 @@
       }
     } catch {
       capaRuta = L.polyline(waypoints, {
-        color: '#2563EB', weight: 4, opacity: 0.6, dashArray: '10, 8',
+        color: '#FF6720', weight: 4, opacity: 0.6, dashArray: '10, 8',
       }).addTo(mapa);
       mapa.fitBounds(capaRuta.getBounds(), { padding: [40, 40] });
     } finally {
