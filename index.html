@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 
   <script>
     tailwind.config = {
@@ -86,10 +88,10 @@
     }
     .marcador-parada {
       width: 14px; height: 14px;
-      background: #FF8844;
+      background: #D97706;
       border: 2px solid #fff;
       border-radius: 50%;
-      box-shadow: 0 1px 4px rgba(255,103,32,.35);
+      box-shadow: 0 1px 4px rgba(217,119,6,.45);
       flex-shrink: 0;
     }
     .etiqueta-parada {
@@ -99,14 +101,14 @@
       pointer-events: none;
     }
     .etiqueta-parada .caja-parada {
-      background: #fff;
-      border: 1px solid #FFD0B8;
+      background: #FFFBEB;
+      border: 1px solid #FCD34D;
       border-radius: 5px;
       padding: 3px 8px;
       font-size: 10px;
       font-weight: 600;
-      color: #C4470E;
-      box-shadow: 0 2px 8px rgba(255,103,32,.2);
+      color: #92400E;
+      box-shadow: 0 2px 8px rgba(217,119,6,.2);
       white-space: nowrap;
       line-height: 1.3;
       margin-bottom: 4px;
@@ -140,6 +142,31 @@
     .tarifa-value { font-size: 0.875rem; line-height: 1.3; }
     .stat-box, .tarifa-box { padding: 1rem 0.75rem; min-height: 5.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .kpi-card-inner { padding: 1.25rem 0.75rem; min-height: 7rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+    #minimapa-peru-wrap {
+      width: 118px;
+      pointer-events: none;
+    }
+    #minimapa-peru {
+      display: block;
+      width: 118px;
+      height: 148px;
+    }
+    #minimapa-peru .depto-base {
+      fill: #f8fafc;
+      stroke: none;
+    }
+    #minimapa-peru .minimapa-malla {
+      fill: none;
+      stroke: #94a3b8;
+      stroke-width: 0.65;
+      stroke-linejoin: round;
+    }
+    #minimapa-peru .depto-activo {
+      fill: #FF6720;
+      fill-opacity: 0.78;
+      stroke: none;
+    }
   </style>
 </head>
 
@@ -177,12 +204,9 @@
           <p class="text-brand-700 text-xs font-medium">Trazando ruta real (OSRM)…</p>
         </div>
 
-        <div class="absolute bottom-3 left-3 z-10 bg-white/95 backdrop-blur rounded-lg px-2.5 py-1.5 shadow text-[10px] text-gray-600 space-y-0.5 border border-gray-100">
-          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-green-600 rounded-full inline-block border border-white"></span> Lima (Origen)</div>
-          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full inline-block border border-white" style="background:#E55612"></span> Destino disponible</div>
-          <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full inline-block border border-white" style="background:#FF6720"></span> Destino seleccionado</div>
-          <div class="flex items-center gap-1.5"><span class="inline-flex flex-col items-center"><span class="bg-white border border-brand-200 rounded px-1 text-[8px] leading-tight text-brand-700">Parada</span><span class="w-2 h-2 rounded-full border border-white -mt-px" style="background:#FF8844"></span></span> Parada intermedia (con nombre)</div>
-          <div class="flex items-center gap-1.5"><span class="w-5 h-0.5 inline-block rounded" style="background:#FF6720"></span> Ruta real (OSRM)</div>
+        <div id="minimapa-peru-wrap" class="absolute bottom-3 left-3 z-10 bg-white/95 backdrop-blur rounded-lg shadow border border-gray-100 px-2 pt-1.5 pb-2">
+          <div class="text-[9px] text-slate-400 font-semibold uppercase tracking-wide mb-0.5">Ubicación</div>
+          <svg id="minimapa-peru" viewBox="0 0 118 148" aria-hidden="true"></svg>
         </div>
 
       </div>
@@ -252,12 +276,12 @@
           </div>
         </div>
 
-        <div id="bloque-paradas" class="hidden flex-none bg-brand-50 rounded-xl border border-brand-200 px-4 py-3">
+        <div id="bloque-paradas" class="hidden flex-none bg-amber-50 rounded-xl border border-amber-200 px-4 py-3">
           <div class="flex items-start gap-2">
-            <i class="fa-solid fa-circle-nodes text-brand-500 mt-0.5 text-sm"></i>
+            <i class="fa-solid fa-circle-nodes text-amber-600 mt-0.5 text-sm"></i>
             <div class="min-w-0">
-              <div class="text-sm font-semibold text-brand-700 mb-1">Paradas Intermedias</div>
-              <div id="kpi-paradas" class="text-sm text-brand-800 leading-5"></div>
+              <div class="text-sm font-semibold text-amber-800 mb-1">Paradas Intermedias</div>
+              <div id="kpi-paradas" class="text-sm text-amber-900 leading-5"></div>
             </div>
           </div>
         </div>
@@ -319,14 +343,92 @@
   let destinoActual = null;
   let agenciaActual = null;
   let idActivoAntes = null;
+  let geoPeru = null;
+  let meshPeruMalla = null;
+  let projectionPeru = null;
+  let pathPeru = null;
 
-  const VISTA_INICIAL = { center: [-9.5, -75.0], zoom: 5 };
+  const COLOR_RUTA = '#1B3A6B';
+  const COLOR_PARADA = '#D97706';
+
+  const MAPA_DESTINO_DEPARTAMENTO = {
+    ancash: 'ANCASH',
+    apurimac: 'APURIMAC',
+    arequipa: 'AREQUIPA',
+    ayacucho: 'AYACUCHO',
+    chiclayo: 'LAMBAYEQUE',
+    cusco: 'CUSCO',
+    huanuco: 'HUANUCO',
+    ica: 'ICA',
+    junin___hyo: 'JUNIN',
+    junin___sc: 'JUNIN',
+    moquegua: 'MOQUEGUA',
+    piura: 'PIURA',
+    puno: 'PUNO',
+    tacna: 'TACNA',
+    trujillo: 'LA LIBERTAD',
+    tumbes: 'TUMBES',
+  };
+
+  function calcularBoundsGlobal() {
+    const bounds = L.latLngBounds(datos.partida.coordenadas);
+    datos.destinos.forEach(d => bounds.extend(d.coordenadas));
+    return bounds;
+  }
 
   function irVistaInicial(animar = true) {
-    mapa.setView(VISTA_INICIAL.center, VISTA_INICIAL.zoom, {
+    if (!mapa || !datos) return;
+    mapa.fitBounds(calcularBoundsGlobal(), {
+      padding: [36, 36],
+      maxZoom: 6,
       animate: animar,
       duration: animar ? 0.7 : 0,
     });
+  }
+
+  async function inicializarMinimapa() {
+    const resp = await fetch('peru_departamentos.topo.json');
+    if (!resp.ok) throw new Error('No se pudo cargar peru_departamentos.topo.json');
+    const topo = await resp.json();
+    geoPeru = topojson.feature(topo, topo.objects.data);
+    meshPeruMalla = topojson.mesh(topo, topo.objects.data);
+
+    const svg = d3.select('#minimapa-peru');
+    const w = 118;
+    const h = 148;
+    projectionPeru = d3.geoMercator().fitExtent([[6, 6], [w - 6, h - 6]], geoPeru);
+    pathPeru = d3.geoPath().projection(projectionPeru);
+
+    const capas = svg.append('g').attr('class', 'minimapa-capas');
+    capas.append('g')
+      .attr('class', 'minimapa-deptos')
+      .selectAll('path')
+      .data(geoPeru.features)
+      .join('path')
+      .attr('class', 'depto-base')
+      .attr('d', pathPeru);
+    capas.append('g').attr('class', 'minimapa-activo');
+    capas.append('path').attr('class', 'minimapa-malla').attr('d', pathPeru(meshPeruMalla));
+
+    actualizarMinimapa(null);
+  }
+
+  function actualizarMinimapa(destinoId) {
+    if (!geoPeru || !pathPeru) return;
+
+    const dept = destinoId ? MAPA_DESTINO_DEPARTAMENTO[destinoId] : null;
+    const activo = d3.select('#minimapa-peru .minimapa-activo');
+
+    activo.selectAll('path').remove();
+
+    if (dept) {
+      const feat = geoPeru.features.find(f => f.properties.departamento === dept);
+      if (feat) {
+        activo.append('path')
+          .attr('class', 'depto-activo')
+          .attr('d', pathPeru(feat));
+      }
+    }
   }
 
   function crearIconoParada(nombre) {
@@ -370,6 +472,7 @@
     document.getElementById('estado-osrm').classList.add('hidden');
     document.getElementById('mapa-cargando').classList.add('hidden');
 
+    actualizarMinimapa(null);
     irVistaInicial(true);
   }
 
@@ -457,7 +560,16 @@
 
     construirResumenGlobal();
 
-    setTimeout(() => mapa.invalidateSize(), 100);
+    try {
+      await inicializarMinimapa();
+    } catch (e) {
+      console.warn('Minimapa Perú:', e.message);
+    }
+
+    setTimeout(() => {
+      mapa.invalidateSize();
+      irVistaInicial(false);
+    }, 100);
   }
 
   function mostrarErrorCarga(msg) {
@@ -530,6 +642,7 @@
 
     document.getElementById('select-destino').value = id;
     actualizarEstiloMarcador(id);
+    actualizarMinimapa(id);
 
     document.getElementById('panel-bienvenida').classList.add('hidden');
     const panelDetalle = document.getElementById('panel-detalle');
@@ -587,10 +700,10 @@
       document.getElementById('kpi-paradas').innerHTML =
         agenciaActual.paradas.map((p, i) =>
           `<span class="inline-flex items-center gap-1">
-             <span class="w-5 h-5 text-white rounded-full inline-flex items-center justify-center text-xs font-bold" style="background:#FF6720">${i+1}</span>
+             <span class="w-5 h-5 text-white rounded-full inline-flex items-center justify-center text-xs font-bold" style="background:${COLOR_PARADA}">${i+1}</span>
              <span>${p}</span>
            </span>`
-        ).join(' <i class="fa-solid fa-chevron-right text-brand-300 text-xs mx-0.5"></i> ');
+        ).join(' <i class="fa-solid fa-chevron-right text-amber-300 text-xs mx-0.5"></i> ');
       bloqParadas.classList.remove('hidden');
     } else {
       bloqParadas.classList.add('hidden');
@@ -633,7 +746,7 @@
       if (json.code === 'Ok' && json.routes.length > 0) {
         const coordsLeaflet = json.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
         capaRuta = L.polyline(coordsLeaflet, {
-          color: '#FF6720', weight: 5, opacity: 0.85, smoothFactor: 1,
+          color: COLOR_RUTA, weight: 5, opacity: 0.9, smoothFactor: 1,
         }).addTo(mapa);
         mapa.fitBounds(capaRuta.getBounds(), {
           padding: [40, 40],
@@ -646,7 +759,7 @@
       }
     } catch {
       capaRuta = L.polyline(waypoints, {
-        color: '#FF6720', weight: 4, opacity: 0.6, dashArray: '10, 8',
+        color: COLOR_RUTA, weight: 4, opacity: 0.65, dashArray: '10, 8',
       }).addTo(mapa);
       mapa.fitBounds(capaRuta.getBounds(), {
         padding: [40, 40],
