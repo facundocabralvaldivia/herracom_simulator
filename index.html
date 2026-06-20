@@ -172,24 +172,12 @@
 
 <body class="bg-slate-100 flex flex-col h-screen overflow-hidden">
 
-  <header class="flex-none text-white px-5 py-2.5 flex items-center justify-between shadow-lg" style="height:52px; background:#FF6720">
+  <header class="flex-none text-white px-5 py-2.5 flex items-center justify-start shadow-lg" style="height:52px; background:#FF6720">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+      <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
         <i class="fa-solid fa-truck-fast text-white"></i>
       </div>
-      <div>
-        <h1 class="font-bold text-sm leading-tight tracking-wide">Dashboard Logístico Perú</h1>
-        <p class="text-white/80 text-[10px]">Análisis de Flete Por Provincia · MetPerú · Ene–May 2026</p>
-      </div>
-    </div>
-    <div class="flex items-center gap-3 text-sm">
-      <div id="estado-osrm" class="hidden flex items-center gap-1.5 text-white/80 text-[10px]">
-        <span class="pulse w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span>
-        <span>OSRM conectado</span>
-      </div>
-      <div id="badge-periodo" class="bg-white/15 border border-white/25 text-white text-[10px] px-2.5 py-0.5 rounded-full font-medium">
-        <i class="fa-solid fa-calendar-days mr-1"></i>Ene–May 2026
-      </div>
+      <h1 class="font-bold text-sm leading-tight tracking-wide">Analisis de Gasto de Flete Por Provincia - Agencia - Met Perú</h1>
     </div>
   </header>
 
@@ -214,29 +202,19 @@
 
     <section id="panel-derecho" class="flex-1 min-h-0 min-w-0">
 
-      <div class="flex-none bg-white rounded-xl shadow border border-slate-200 panel-card">
-        <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
-          <i class="fa-solid fa-location-dot text-brand-600 mr-1"></i>Destino
-        </label>
-        <select id="select-destino"
-          class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
-          onchange="onCambioDestino()">
-          <option value="">— Selecciona un destino —</option>
-        </select>
-      </div>
-
-      <div id="panel-bienvenida" class="flex-1 bg-gradient-to-br from-brand-50 to-slate-50 rounded-xl border border-brand-100 panel-card flex flex-col items-center justify-center text-center min-h-0">
-        <div class="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center mb-2">
-          <i class="fa-solid fa-route text-brand-600 text-xl"></i>
+      <div class="flex-none flex gap-2.5 min-w-0">
+        <div id="wrap-select-destino" class="flex-1 min-w-0 bg-white rounded-xl shadow border border-slate-200 panel-card">
+          <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
+            <i class="fa-solid fa-location-dot text-brand-600 mr-1"></i>Destino
+          </label>
+          <select id="select-destino"
+            class="sel w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white cursor-pointer"
+            onchange="onCambioDestino()">
+            <option value="">— Selecciona un destino —</option>
+          </select>
         </div>
-        <h2 class="font-bold text-slate-700 text-sm mb-1">Selecciona un destino</h2>
-        <p class="text-slate-500 text-xs max-w-xs">Haz clic en un marcador del mapa o usa el selector para visualizar la ruta y métricas de flete.</p>
-        <div id="resumen-global" class="grid grid-cols-3 gap-2 mt-3 w-full max-w-sm"></div>
-      </div>
 
-      <div id="panel-detalle" class="hidden flex-1 flex flex-col gap-3 min-h-0 overflow-hidden fade-in">
-
-        <div class="flex-none bg-white rounded-xl shadow border border-slate-200 panel-card">
+        <div id="wrap-select-agencia" class="hidden flex-[6] min-w-0 bg-white rounded-xl shadow border border-slate-200 panel-card">
           <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
             <i class="fa-solid fa-building text-brand-600 mr-1"></i>Agencia de Transporte
           </label>
@@ -251,6 +229,18 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div id="panel-bienvenida" class="flex-1 bg-gradient-to-br from-brand-50 to-slate-50 rounded-xl border border-brand-100 panel-card flex flex-col items-center justify-center text-center min-h-0">
+        <div class="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center mb-2">
+          <i class="fa-solid fa-route text-brand-600 text-xl"></i>
+        </div>
+        <h2 class="font-bold text-slate-700 text-sm mb-1">Selecciona un destino</h2>
+        <p class="text-slate-500 text-xs max-w-xs">Haz clic en un marcador del mapa o usa el selector para visualizar la ruta y métricas de flete.</p>
+        <div id="resumen-global" class="grid grid-cols-3 gap-2 mt-3 w-full max-w-sm"></div>
+      </div>
+
+      <div id="panel-detalle" class="hidden flex-1 flex flex-col gap-3 min-h-0 overflow-hidden fade-in">
 
         <div class="flex-none grid grid-cols-3 gap-2.5">
           <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow text-center kpi-card-inner">
@@ -258,7 +248,7 @@
               <i class="fa-solid fa-road text-brand-600 text-sm"></i>
             </div>
             <div id="kpi-km" class="kpi-value font-bold text-brand-700">—</div>
-            <div class="kpi-label text-slate-500 font-medium mt-1">Kilometraje</div>
+            <div class="kpi-label text-slate-500 font-medium mt-1">Kilómetros</div>
           </div>
           <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow text-center kpi-card-inner">
             <div class="w-9 h-9 bg-brand-50 rounded-lg flex items-center justify-center mx-auto mb-2 border border-brand-100">
@@ -469,7 +459,9 @@
 
     document.getElementById('panel-bienvenida').classList.remove('hidden');
     document.getElementById('panel-detalle').classList.add('hidden');
-    document.getElementById('estado-osrm').classList.add('hidden');
+    document.getElementById('wrap-select-agencia').classList.add('hidden');
+    document.getElementById('wrap-select-destino').classList.remove('flex-[4]');
+    document.getElementById('wrap-select-destino').classList.add('flex-1');
     document.getElementById('mapa-cargando').classList.add('hidden');
 
     actualizarMinimapa(null);
@@ -614,10 +606,8 @@
     datos.destinos.forEach(dest => {
       const opt = document.createElement('option');
       opt.value = dest.id;
-      const mejor = dest.agencias?.[0];
-      const codigo = dest.nombre_grafico || dest.nombre.substring(0, 3).toUpperCase();
-      const km = mejor?.km ?? '—';
-      opt.textContent = `${dest.nombre} (${codigo}) · ${km} KM`;
+      const codigo = dest.abreviatura || dest.nombre_grafico || dest.nombre.substring(0, 3).toUpperCase();
+      opt.textContent = `${dest.nombre} (${codigo})`;
       sel.appendChild(opt);
     });
   }
@@ -645,6 +635,9 @@
     actualizarMinimapa(id);
 
     document.getElementById('panel-bienvenida').classList.add('hidden');
+    document.getElementById('wrap-select-agencia').classList.remove('hidden');
+    document.getElementById('wrap-select-destino').classList.remove('flex-1');
+    document.getElementById('wrap-select-destino').classList.add('flex-[4]');
     const panelDetalle = document.getElementById('panel-detalle');
     panelDetalle.classList.remove('hidden');
     panelDetalle.classList.add('fade-in');
@@ -753,7 +746,6 @@
           animate: true,
           duration: 0.6,
         });
-        document.getElementById('estado-osrm').classList.remove('hidden');
       } else {
         throw new Error('Sin ruta OSRM');
       }
