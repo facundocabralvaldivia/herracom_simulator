@@ -44,19 +44,101 @@
     }
     body { background: #f1f5f9; }
 
-    ::-webkit-scrollbar { width: 4px; }
+    :root {
+      --header-h: 3.25rem;
+      --panel-min-w: 20rem;
+      --map-min-h: 17.5rem;
+      --panel-gap: 0.625rem;
+    }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
     ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
 
     #mapa { height: 100%; width: 100%; border-radius: 12px; z-index: 1; }
-    #contenedor-mapa { height: 100%; position: relative; }
+    #contenedor-mapa { height: 100%; position: relative; min-height: var(--map-min-h); }
+
+    /* ── Layout principal ── */
+    #layout-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #seccion-mapa {
+      flex: none;
+      width: 100%;
+      min-height: var(--map-min-h);
+      height: clamp(var(--map-min-h), 48vh, 40rem);
+    }
 
     #panel-derecho {
-      height: 100%;
+      flex: 1 1 auto;
+      min-width: 0;
+      min-height: 14rem;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: var(--panel-gap);
+      align-self: stretch;
+      container-type: inline-size;
+      container-name: sidebar;
+      font-size: clamp(0.8125rem, 0.75rem + 0.2vw, 0.9375rem);
+    }
+
+    #panel-scroll {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+      gap: var(--panel-gap);
+      width: 100%;
+    }
+
+    #panel-scroll.estado-bienvenida {
+      overflow-y: hidden;
+    }
+
+    @media (min-width: 1024px) {
+      #layout-main {
+        flex-direction: row;
+        align-items: stretch;
+      }
+      #seccion-mapa {
+        flex: 1 1 58%;
+        width: auto;
+        min-width: 0;
+        height: auto;
+        max-height: none;
+      }
+      #panel-derecho {
+        flex: 1 1 42%;
+        min-width: var(--panel-min-w);
+        min-height: 0;
+      }
+    }
+
+    /* ── Header responsive ── */
+    #header-titulo {
+      font-size: clamp(0.7rem, 1.6vw, 0.875rem);
+      line-height: 1.35;
+    }
+
+    @media (max-width: 639px) {
+      #header-titulo {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
     }
 
     @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.3)} }
@@ -134,23 +216,157 @@
     .badge-directo { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
     .badge-paradas { background:#FFF4ED; color:#C4470E; border:1px solid #FFD0B8; }
 
-    .panel-card { padding: 1rem 1.125rem; }
-    .panel-card-title { font-size: 0.8rem; margin-bottom: 0.625rem; }
-    .kpi-value { font-size: 1.75rem; line-height: 1.2; }
-    .kpi-label { font-size: 0.8rem; }
-    .stat-value { font-size: 1.375rem; line-height: 1.2; }
-    .tarifa-value { font-size: 0.875rem; line-height: 1.3; }
-    .stat-box, .tarifa-box { padding: 1rem 0.75rem; min-height: 5.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    .kpi-card-inner { padding: 1.25rem 0.75rem; min-height: 7rem; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .panel-card { padding: 0.85em 1em; }
+    .panel-card-title { font-size: 0.82em; margin-bottom: 0.45em; }
+    .kpi-value { font-size: 1.65em; line-height: 1.2; }
+    .kpi-label { font-size: 0.8em; line-height: 1.3; }
+    .stat-value { font-size: 1.45em; line-height: 1.2; }
+    .tarifa-value { font-size: 0.92em; line-height: 1.35; word-break: break-word; }
+    .stat-box, .tarifa-box {
+      padding: 0.75em 0.45em;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .kpi-card-inner {
+      padding: 0.85em 0.45em;
+      min-height: 0;
+      min-width: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--panel-gap);
+      width: 100%;
+      align-items: stretch;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--panel-gap);
+      width: 100%;
+    }
+    .tarifas-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--panel-gap);
+      width: 100%;
+    }
+
+    @container sidebar (min-width: 22rem) {
+      .tarifas-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
+    #panel-selectores {
+      flex: none;
+    }
+    #panel-selectores.selectores-row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--panel-gap);
+      width: 100%;
+    }
+    @media (min-width: 640px) {
+      #panel-selectores.selectores-row {
+        flex-direction: row;
+      }
+    }
+
+    #panel-detalle.hidden {
+      display: none !important;
+    }
+
+    #panel-detalle:not(.hidden) {
+      display: flex;
+      flex-direction: column;
+      gap: var(--panel-gap);
+      flex: 1 1 auto;
+      min-height: 0;
+      width: 100%;
+    }
+
+    #panel-bienvenida.hidden {
+      display: none !important;
+    }
+
+    #panel-bienvenida:not(.hidden) {
+      flex: 1 1 auto;
+      min-height: 12rem;
+      width: 100%;
+    }
+
+    .panel-seccion-crece {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      width: 100%;
+    }
+
+    .panel-seccion-crece .stats-grid,
+    .panel-seccion-crece .tarifas-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      grid-auto-rows: minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    @media (min-width: 1024px) {
+      #panel-scroll:not(.estado-bienvenida) {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-y: auto;
+      }
+
+      #panel-scroll:not(.estado-bienvenida) #panel-detalle:not(.hidden) {
+        flex: 1 0 auto;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--panel-gap);
+      }
+
+      #panel-detalle:not(.hidden) .kpi-grid {
+        flex: 0 0 auto;
+        min-height: 5.5em;
+        align-items: stretch;
+      }
+
+      #panel-detalle:not(.hidden) .kpi-card {
+        min-height: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #panel-detalle:not(.hidden) .panel-seccion-crece {
+        flex: 1 1 0;
+        min-height: 4.5em;
+      }
+
+      #panel-detalle:not(.hidden) .panel-seccion-crece .stat-box,
+      #panel-detalle:not(.hidden) .panel-seccion-crece .tarifa-box {
+        align-self: stretch;
+      }
+    }
 
     #minimapa-peru-wrap {
-      width: 118px;
+      width: clamp(5.5rem, 18vw, 7.375rem);
       pointer-events: none;
     }
     #minimapa-peru {
       display: block;
-      width: 118px;
-      height: 148px;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 118 / 148;
     }
     #minimapa-peru .depto-base {
       fill: #f8fafc;
@@ -172,18 +388,18 @@
 
 <body class="bg-slate-100 flex flex-col h-screen overflow-hidden">
 
-  <header class="flex-none text-white px-5 py-2.5 flex items-center justify-start shadow-lg" style="height:52px; background:#FF6720">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
-        <i class="fa-solid fa-truck-fast text-white"></i>
+  <header class="flex-none text-white px-3 sm:px-5 py-2 flex items-center justify-start shadow-lg shrink-0" style="min-height:var(--header-h); background:#FF6720">
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <div class="w-7 h-7 sm:w-8 sm:h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+        <i class="fa-solid fa-truck-fast text-white text-sm sm:text-base"></i>
       </div>
-      <h1 class="font-bold text-sm leading-tight tracking-wide">Analisis de Gasto de Flete Por Provincia - Agencia - Met Perú</h1>
+      <h1 id="header-titulo" class="font-bold leading-tight tracking-wide min-w-0">Analisis de Gasto de Flete Por Provincia - Agencia - Met Perú</h1>
     </div>
   </header>
 
-  <main class="flex-1 flex gap-2 p-2 min-h-0 overflow-hidden">
+  <main id="layout-main">
 
-    <section class="flex-none min-h-0" style="width:58%">
+    <section id="seccion-mapa" class="min-h-0">
       <div id="contenedor-mapa" class="relative bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200 h-full">
         <div id="mapa"></div>
 
@@ -200,10 +416,10 @@
       </div>
     </section>
 
-    <section id="panel-derecho" class="flex-1 min-h-0 min-w-0">
+    <section id="panel-derecho">
 
-      <div class="flex-none flex gap-2.5 min-w-0">
-        <div id="wrap-select-destino" class="flex-1 min-w-0 bg-white rounded-xl shadow border border-slate-200 panel-card">
+      <div id="panel-selectores" class="selectores-row min-w-0">
+        <div id="wrap-select-destino" class="flex-1 sm:flex-[4] min-w-0 bg-white rounded-xl shadow border border-slate-200 panel-card">
           <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
             <i class="fa-solid fa-location-dot text-brand-600 mr-1"></i>Destino
           </label>
@@ -214,7 +430,7 @@
           </select>
         </div>
 
-        <div id="wrap-select-agencia" class="hidden flex-[6] min-w-0 bg-white rounded-xl shadow border border-slate-200 panel-card">
+        <div id="wrap-select-agencia" class="hidden flex-1 sm:flex-[6] min-w-0 bg-white rounded-xl shadow border border-slate-200 panel-card">
           <label class="block panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
             <i class="fa-solid fa-building text-brand-600 mr-1"></i>Agencia de Transporte
           </label>
@@ -231,18 +447,19 @@
         </div>
       </div>
 
-      <div id="panel-bienvenida" class="flex-1 bg-gradient-to-br from-brand-50 to-slate-50 rounded-xl border border-brand-100 panel-card flex flex-col items-center justify-center text-center min-h-0">
+      <div id="panel-scroll" class="estado-bienvenida">
+      <div id="panel-bienvenida" class="bg-gradient-to-br from-brand-50 to-slate-50 rounded-xl border border-brand-100 panel-card flex flex-col items-center justify-center text-center flex-1">
         <div class="w-12 h-12 bg-brand-100 rounded-full flex items-center justify-center mb-2">
           <i class="fa-solid fa-route text-brand-600 text-xl"></i>
         </div>
         <h2 class="font-bold text-slate-700 text-sm mb-1">Selecciona un destino</h2>
         <p class="text-slate-500 text-xs max-w-xs">Haz clic en un marcador del mapa o usa el selector para visualizar la ruta y métricas de flete.</p>
-        <div id="resumen-global" class="grid grid-cols-3 gap-2 mt-3 w-full max-w-sm"></div>
+        <div id="resumen-global" class="grid grid-cols-3 gap-2 mt-3 w-full"></div>
       </div>
 
-      <div id="panel-detalle" class="hidden flex-1 flex flex-col gap-3 min-h-0 overflow-hidden fade-in">
+      <div id="panel-detalle" class="hidden gap-3 fade-in">
 
-        <div class="flex-none grid grid-cols-3 gap-2.5">
+        <div class="kpi-grid">
           <div class="kpi-card bg-white rounded-xl border border-slate-200 shadow text-center kpi-card-inner">
             <div class="w-9 h-9 bg-brand-100 rounded-lg flex items-center justify-center mx-auto mb-2">
               <i class="fa-solid fa-road text-brand-600 text-sm"></i>
@@ -266,7 +483,7 @@
           </div>
         </div>
 
-        <div id="bloque-paradas" class="hidden flex-none bg-amber-50 rounded-xl border border-amber-200 px-4 py-3">
+        <div id="bloque-paradas" class="hidden bg-amber-50 rounded-xl border border-amber-200 px-4 py-3">
           <div class="flex items-start gap-2">
             <i class="fa-solid fa-circle-nodes text-amber-600 mt-0.5 text-sm"></i>
             <div class="min-w-0">
@@ -276,11 +493,11 @@
           </div>
         </div>
 
-        <div class="flex-1 bg-white rounded-xl border border-slate-200 shadow panel-card flex flex-col min-h-0">
+        <div class="panel-seccion-crece bg-white rounded-xl border border-slate-200 shadow panel-card">
           <div class="panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
             <i class="fa-solid fa-chart-bar text-brand-600 mr-1"></i>Historial Acumulado (Ene–May 2026)
           </div>
-          <div class="grid grid-cols-3 gap-2.5 flex-1">
+          <div class="stats-grid">
             <div class="text-center bg-slate-50 rounded-xl stat-box border border-slate-100">
               <div id="stat-pedidos" class="stat-value font-bold text-slate-700">—</div>
               <div class="kpi-label text-slate-500 mt-1.5">Total Pedidos</div>
@@ -296,11 +513,11 @@
           </div>
         </div>
 
-        <div id="bloque-tarifas" class="flex-1 bg-white rounded-xl border border-slate-200 shadow panel-card flex flex-col min-h-0">
+        <div id="bloque-tarifas" class="panel-seccion-crece bg-white rounded-xl border border-slate-200 shadow panel-card">
           <div class="panel-card-title font-semibold text-slate-500 uppercase tracking-wider">
             <i class="fa-solid fa-tags text-brand-600 mr-1"></i>Tarifas de Referencia ($ USD)
           </div>
-          <div class="grid grid-cols-4 gap-2 flex-1">
+          <div class="tarifas-grid">
             <div class="text-center bg-brand-50 rounded-xl tarifa-box border border-brand-100">
               <div id="tarifa-peso" class="tarifa-value font-bold text-brand-800">—</div>
               <div class="kpi-label text-brand-600 mt-1.5">Tarifa por Peso</div>
@@ -320,7 +537,9 @@
           </div>
         </div>
 
-      </div>
+      </div><!-- panel-detalle -->
+
+      </div><!-- panel-scroll -->
     </section>
   </main>
 
@@ -459,8 +678,9 @@
 
     document.getElementById('panel-bienvenida').classList.remove('hidden');
     document.getElementById('panel-detalle').classList.add('hidden');
+    document.getElementById('panel-scroll').classList.add('estado-bienvenida');
     document.getElementById('wrap-select-agencia').classList.add('hidden');
-    document.getElementById('wrap-select-destino').classList.remove('flex-[4]');
+    document.getElementById('wrap-select-destino').classList.remove('sm:flex-[4]');
     document.getElementById('wrap-select-destino').classList.add('flex-1');
     document.getElementById('mapa-cargando').classList.add('hidden');
 
@@ -476,9 +696,35 @@
     }
   });
 
+  function fmtNum(val) {
+    if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
+    const n = Number(val);
+    return Number.isInteger(n)
+      ? n.toLocaleString('en-US')
+      : n.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  }
+
+  function fmtDecimal(val, decimales = 2) {
+    if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
+    return Number(val).toLocaleString('en-US', {
+      minimumFractionDigits: decimales,
+      maximumFractionDigits: decimales,
+    });
+  }
+
+  function fmtTarifa(val, unidad) {
+    if (val === null || val === undefined) return '—';
+    return `$ ${fmtDecimal(val, 2)} USD/${unidad}`;
+  }
+
+  function fmtRatio(val) {
+    if (val === null || val === undefined) return '—';
+    return `${fmtDecimal(val * 100, 2)}%`;
+  }
+
   function htmlOpcionAgencia(ag) {
     if (ag.costo_kg_ponderado == null) return ag.nombre;
-    const metrica = `$ ${Number(ag.costo_kg_ponderado).toFixed(2)}USD/ KG Ponderado`;
+    const metrica = `${fmtTarifa(ag.costo_kg_ponderado, 'KG')} Ponderado`;
     return `${ag.nombre} · <strong>${metrica}</strong>`;
   }
 
@@ -562,6 +808,22 @@
       mapa.invalidateSize();
       irVistaInicial(false);
     }, 100);
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (mapa) mapa.invalidateSize();
+      }, 150);
+    });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (mapa) mapa.invalidateSize();
+        }, 150);
+      });
+    }
   }
 
   function mostrarErrorCarga(msg) {
@@ -582,22 +844,17 @@
     const cont = document.getElementById('resumen-global');
     cont.innerHTML = `
       <div class="bg-white rounded-lg p-2 border border-brand-100 shadow-sm">
-        <div class="text-lg font-bold text-brand-700">${totalDest}</div>
+        <div class="text-lg font-bold text-brand-700">${fmtNum(totalDest)}</div>
         <div class="text-[10px] text-slate-500">Destinos</div>
       </div>
       <div class="bg-white rounded-lg p-2 border border-brand-100 shadow-sm">
-        <div class="text-lg font-bold text-brand-700">${totalPedidos.toLocaleString()}</div>
+        <div class="text-lg font-bold text-brand-700">${fmtNum(totalPedidos)}</div>
         <div class="text-[10px] text-slate-500">Pedidos</div>
       </div>
       <div class="bg-white rounded-lg p-2 border border-brand-100 shadow-sm">
-        <div class="text-lg font-bold text-brand-700">${datos.destinos.reduce((s,d)=>s+d.agencias.length,0)}</div>
+        <div class="text-lg font-bold text-brand-700">${fmtNum(datos.destinos.reduce((s,d)=>s+d.agencias.length,0))}</div>
         <div class="text-[10px] text-slate-500">Rutas</div>
       </div>`;
-  }
-
-  function fmtNum(val) {
-    if (val === null || val === undefined || Number.isNaN(Number(val))) return '—';
-    return Number(val).toLocaleString();
   }
 
   function poblarSelectorDestinos() {
@@ -635,9 +892,11 @@
     actualizarMinimapa(id);
 
     document.getElementById('panel-bienvenida').classList.add('hidden');
+    document.getElementById('panel-scroll').classList.remove('estado-bienvenida');
     document.getElementById('wrap-select-agencia').classList.remove('hidden');
     document.getElementById('wrap-select-destino').classList.remove('flex-1');
-    document.getElementById('wrap-select-destino').classList.add('flex-[4]');
+    document.getElementById('wrap-select-destino').classList.add('sm:flex-[4]');
+    document.getElementById('panel-scroll').scrollTop = 0;
     const panelDetalle = document.getElementById('panel-detalle');
     panelDetalle.classList.remove('hidden');
     panelDetalle.classList.add('fade-in');
@@ -665,16 +924,6 @@
     const seleccionada = destinoActual.agencias.find(a => a.nombre === nombreSeleccionado)
       || destinoActual.agencias[0];
     document.getElementById('select-agencia-label').innerHTML = htmlOpcionAgencia(seleccionada);
-  }
-
-  function fmtRatio(val) {
-    if (val === null || val === undefined) return '—';
-    return (val * 100).toFixed(2) + '%';
-  }
-
-  function fmtTarifa(val, unidad) {
-    if (val === null || val === undefined) return '—';
-    return `$ ${val.toFixed(2)}USD${unidad}`;
   }
 
   function actualizarPanel() {
@@ -710,13 +959,13 @@
       fmtRatio(agenciaActual.flete_venta_usd);
 
     document.getElementById('tarifa-peso').textContent =
-      fmtTarifa(agenciaActual.tarifa_por_peso, '/KG');
+      fmtTarifa(agenciaActual.tarifa_por_peso, 'KG');
     document.getElementById('tarifa-bulto').textContent =
-      fmtTarifa(agenciaActual.tarifa_por_bulto, '/Bulto');
+      fmtTarifa(agenciaActual.tarifa_por_bulto, 'Bulto');
     document.getElementById('tarifa-pedido').textContent =
-      fmtTarifa(agenciaActual.tarifa_por_pedido, '/Pedido');
+      fmtTarifa(agenciaActual.tarifa_por_pedido, 'Pedido');
     document.getElementById('tarifa-viaje').textContent =
-      fmtTarifa(agenciaActual.tarifa_por_viaje, '/Viaje');
+      fmtTarifa(agenciaActual.tarifa_por_viaje, 'Viaje');
   }
 
   async function dibujarRuta() {
