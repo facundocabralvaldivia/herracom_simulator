@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generado": "2026-06-19T15:40:14.636433",
+    "generado": "2026-06-22T10:08:21.776569",
     "periodo": "Ene-May 2026",
     "moneda": "USD"
   },
@@ -17,8 +17,8 @@
       "nombre": "Ancásh",
       "nombre_grafico": "ANC",
       "coordenadas": [
-        -9.5164189,
-        -77.5302062
+        -10.7534,
+        -77.7575
       ],
       "agencias": [
         {
@@ -57,8 +57,8 @@
           "tarifa_por_pedido": null,
           "tarifa_por_viaje": null,
           "coordenadas_llegada": [
-            -9.0602304,
-            -78.5899671
+            -9.5164189,
+            -77.5302062
           ]
         },
         {
@@ -77,8 +77,8 @@
           "tarifa_por_pedido": null,
           "tarifa_por_viaje": null,
           "coordenadas_llegada": [
-            -9.0602304,
-            -78.5899671
+            -9.5164189,
+            -77.5302062
           ]
         },
         {
@@ -728,7 +728,44 @@
           "coordenadas_llegada": [
             -12.867386,
             -72.6937147
-          ]
+          ],
+          "ruta_bifurcada": {
+            "punto_bifurcacion": [
+              -13.5333,
+              -71.9434
+            ],
+            "ramas": [
+              {
+                "color": "#1565C0",
+                "paradas": [
+                  "Quillabamba"
+                ],
+                "paradas_coords": [
+                  [
+                    -12.8667,
+                    -72.6833
+                  ]
+                ]
+              },
+              {
+                "color": "#0284C7",
+                "paradas": [
+                  "Sicuani",
+                  "Espinar"
+                ],
+                "paradas_coords": [
+                  [
+                    -14.25,
+                    -71.2167
+                  ],
+                  [
+                    -14.7833,
+                    -71.4167
+                  ]
+                ]
+              }
+            ]
+          }
         },
         {
           "nombre": "Marvisur",
@@ -1463,8 +1500,8 @@
           ],
           "paradas_coords": [
             [
-              -9.0747,
-              -78.5936
+              -9.0602304,
+              -78.5899671
             ],
             [
               -8.112,
@@ -1495,8 +1532,8 @@
           ],
           "paradas_coords": [
             [
-              -9.0747,
-              -78.5936
+              -9.0602304,
+              -78.5899671
             ],
             [
               -7.2264,

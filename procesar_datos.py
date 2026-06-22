@@ -48,7 +48,7 @@ CIUDADES_COORDS = {
     "Paita": (-5.0894, -81.1147),
     "Sullana": (-4.9009, -80.6847),
     "Tumbes": (-3.5667, -80.4500),
-    "Chimbote": (-9.0747, -78.5936),
+    "Chimbote": (-9.0602304, -78.5899671),
     "Chepen": (-7.2264, -79.4333),
     "Trujillo": (-8.1120, -79.0288),
     "Huacho": (-11.1139, -77.5981),
@@ -74,6 +74,39 @@ CIUDADES_COORDS = {
     "Ayacucho": (-13.1627, -74.2259),
     "Lambayeque": (-6.7012, -79.9060),
     "Olmos": (-5.9833, -79.7500),
+}
+
+# Marcador del mapa vs. punto real de llegada (cuando difieren)
+AJUSTES_DESTINO = {
+    "ancash": {
+        "coordenadas_marca": CIUDADES_COORDS["Barranca"],
+        "llegada_por_defecto": (-9.5164189, -77.5302062),
+        "llegada_por_agencia": {
+            "Grael": CIUDADES_COORDS["Chimbote"],
+        },
+    },
+}
+
+# Ruta que se bifurca en un punto (p. ej. Cusco → Quillabamba | Sicuani → Espinar)
+RUTAS_BIFURCADAS = {
+    ("cusco", "Grael"): {
+        "punto_bifurcacion": CIUDADES_COORDS["Cusco"],
+        "ramas": [
+            {
+                "color": "#1565C0",
+                "paradas": ["Quillabamba"],
+                "paradas_coords": [list(CIUDADES_COORDS["Quillabamba"])],
+            },
+            {
+                "color": "#0284C7",
+                "paradas": ["Sicuani", "Espinar"],
+                "paradas_coords": [
+                    list(CIUDADES_COORDS["Sicuani"]),
+                    list(CIUDADES_COORDS["Espinar"]),
+                ],
+            },
+        ],
+    },
 }
 
 
@@ -215,7 +248,42 @@ def procesar_a_json(df: pd.DataFrame) -> dict:
         )
 
     output["destinos"].sort(key=lambda d: d["nombre"])
+    aplicar_ajustes_destinos(output)
+    aplicar_rutas_bifurcadas(output)
     return output
+
+
+def aplicar_rutas_bifurcadas(output: dict) -> None:
+    for dest in output["destinos"]:
+        for ag in dest["agencias"]:
+            config = RUTAS_BIFURCADAS.get((dest["id"], ag["nombre"]))
+            if config:
+                ag["ruta_bifurcada"] = {
+                    "punto_bifurcacion": list(config["punto_bifurcacion"]),
+                    "ramas": [
+                        {
+                            "color": rama["color"],
+                            "paradas": rama["paradas"],
+                            "paradas_coords": [list(c) for c in rama["paradas_coords"]],
+                        }
+                        for rama in config["ramas"]
+                    ],
+                }
+
+
+def aplicar_ajustes_destinos(output: dict) -> None:
+    """Marca en mapa y llegada por agencia cuando no coinciden."""
+    for dest in output["destinos"]:
+        ajuste = AJUSTES_DESTINO.get(dest["id"])
+        if not ajuste:
+            continue
+
+        dest["coordenadas"] = list(ajuste["coordenadas_marca"])
+        for ag in dest["agencias"]:
+            llegada = ajuste["llegada_por_agencia"].get(
+                ag["nombre"], ajuste["llegada_por_defecto"]
+            )
+            ag["coordenadas_llegada"] = list(llegada)
 
 
 if __name__ == "__main__":
